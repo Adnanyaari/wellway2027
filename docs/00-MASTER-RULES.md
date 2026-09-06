@@ -1,10 +1,12 @@
 # 00 — Master rules
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 ## Authority and scope
 
 These rules govern the Well Way 2027 rebuild. Read [AGENTS.md](../AGENTS.md) first. Explicit owner instructions govern project scope; this master document defines baseline requirements, domain documents define details, and accepted ADRs record decisions. Flag conflicts before changing affected behavior. Do not silently override a requirement using an ADR.
 
-Current authorization is documentation only: no installation, scaffolding, application code, database modification, or deployment. Future implementation requires explicit approval.
+Current authorization covers the initial scaffold, dependency installation, schema/client generation and local checks. Full business features, fake content, applied database migrations and deployment remain outside scope. See [ADR 0001](adr/0001-initial-scaffold.md).
 
 ## Required product and stack
 

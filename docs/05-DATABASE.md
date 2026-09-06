@@ -1,5 +1,7 @@
 # 05 — Database
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 ## Persistence rules
 
 Use MySQL in development and production with Prisma ORM. XAMPP may provide only the local database service; verify it actually provides compatible MySQL rather than assuming a bundled database engine is equivalent. If it does not, use an approved local MySQL service. Choose compatible versions and record them before schema implementation.

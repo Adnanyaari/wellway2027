@@ -1,5 +1,7 @@
 # 10 — DevOps and deployment
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 ## Local development
 
 Use VS Code, a GitHub repository, and a local MySQL database. XAMPP is permitted only for the database service, never as the Next.js runtime. Run the future Next.js application with Node.js. Verify MySQL compatibility as described in [05](05-DATABASE.md).
@@ -28,7 +30,7 @@ The future pipeline must:
 6. Restart/reload PM2 using a documented strategy, then verify health and public/private smoke checks.
 7. Mark success only after verification; retain the release identity and deployment audit trail.
 
-No workflow YAML, PM2 configuration, Nginx configuration, or environment files are to be created during this documentation phase.
+No workflow YAML, PM2 configuration or Nginx configuration is included in this scaffold phase. `.env.example` contains safe placeholders only; no real environment file or credentials are created.
 
 ## Recovery and operations
 

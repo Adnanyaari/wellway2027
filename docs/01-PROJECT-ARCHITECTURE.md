@@ -1,5 +1,7 @@
 # 01 — Project architecture
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 ## Required stack and boundaries
 
 Use Next.js App Router with React, strict TypeScript, Tailwind CSS, Prisma, and MySQL. Do not substitute the Pages Router or another production database without explicit requirement approval and an ADR. Select supported, compatible versions at implementation time and record them; this document does not prescribe unverified version numbers.
@@ -15,7 +17,7 @@ The application contains public marketing routes and an authenticated dashboard 
 | Data access | Server-only Prisma operations, constrained selects, database persistence |
 | Integrations | Email, media storage, analytics adapters and operational failure handling |
 
-This is a logical architecture, not a request to create directories or code now. Route files may call server services but must not accumulate SQL, permission rules, or repeated business logic. Data access and trusted operations must never enter a client bundle. Return explicit safe DTOs rather than entire database records.
+The scaffold maps these layers to root-level `app/`, `components/`, `features/`, `lib/`, `db/`, `messages/`, `public/`, and `tests/`. Route files may call server services but must not accumulate SQL, permission rules, or repeated business logic. Data access and trusted operations must never enter a client bundle. Return explicit safe DTOs rather than entire database records. See [ADR 0001](adr/0001-initial-scaffold.md).
 
 ## Rendering and state
 

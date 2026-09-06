@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+coverage/
+db/generated/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+*.log
+.npm-cache/
+.verification/
+.env.local
+.env*.local

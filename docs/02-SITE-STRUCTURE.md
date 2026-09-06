@@ -1,5 +1,7 @@
 # 02 — Site structure
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 ## Routing rules
 
 Every public content route must live under `/ar` or `/en`. Resolve `/` to an approved default locale using a deterministic redirect; the default locale is an open decision. Do not vary an indexable page's content language silently by browser settings. Locale switching must navigate to the equivalent translated record, not assume that slugs match.
@@ -22,7 +24,7 @@ Testimonials may appear as reusable approved sections; a standalone route is not
 
 ## Authenticated and internal routes
 
-Use `/{locale}/dashboard` with permission-gated modules for analytics, clients, services, projects, leads, blog, FAQs, testimonials, users, and roles/permissions. Use localized authentication routes such as `/{locale}/auth/login` and the approved recovery flow. Public registration is disabled by default pending approval.
+The requested `/dashboard` entry checks `dashboard.access` then resolves to `/{locale}/dashboard`, which independently enforces access. Future modules cover analytics, clients, services, projects, leads, blog, FAQs, testimonials, users, and roles/permissions. `/{locale}/auth/login` is currently an unavailable-state shell; no login/recovery/registration HTTP endpoints exist. Implementing those flows requires the next approved phase.
 
 Dashboard, authentication, preview, search/filter variants intended as internal, and internal utility pages must be noindex and excluded from sitemaps. APIs and private downloads require appropriate authentication/permission checks and must not leak private data. URLs, layout guards, or robots rules never replace server authorization.
 

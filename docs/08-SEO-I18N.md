@@ -1,5 +1,7 @@
 # 08 — SEO and internationalization
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 ## Locale contract
 
 Public routes use `/ar` and `/en`. Set correct document language and direction, translate UI/validation/metadata, and format dates/numbers intentionally. Resolve locale on the server and keep hydration consistent. Both locales and RTL/LTR are mandatory across public and authenticated pages. See [03](03-CONTENT-MODEL.md) for missing-translation behavior.

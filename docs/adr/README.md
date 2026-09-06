@@ -1,5 +1,7 @@
 # Architecture decision records
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 Architecture changes require an ADR and explicit owner/maintainer acceptance before implementation. An ADR cannot silently replace a mandatory project requirement; obtain explicit approval to change that requirement and update the governing documents.
 
 ## Process
@@ -23,6 +25,10 @@ Allowed statuses: Proposed, Accepted, Rejected, Superseded. An agent may draft a
 
 ## Decision index
 
-No ADRs have been accepted or fabricated during the documentation-only phase. The user-specified stack is the baseline requirement in [master rules](../00-MASTER-RULES.md).
+The user-specified stack is the baseline requirement in [master rules](../00-MASTER-RULES.md).
+
+| ADR | Status |
+| --- | --- |
+| [0001 — Initial scaffold](0001-initial-scaffold.md) | Technical selections proposed for owner review; reversible scaffold implementation directly authorized by the owner, not production acceptance |
 
 Decisions to record before dependent implementation include authentication/session strategy, exact stack/runtime compatibility, identifier conventions, media storage/upload processing, outbox worker execution, email provider, analytics/consent, redirect execution, and deployment/recovery architecture. Proposals must be based on verified requirements and current compatibility evidence when implementation begins.

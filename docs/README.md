@@ -1,6 +1,8 @@
 # Well Way 2027 engineering rules
 
-Status: documentation baseline; application implementation awaits explicit approval. These documents define required future behavior, not capabilities already built or tested.
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
+Status: initial scaffold implemented under the owner's follow-up authorization. Domain rules include future product requirements; they are not claims that full features exist. See [ADR 0001](adr/0001-initial-scaffold.md) and [verification](SCAFFOLD-VERIFICATION.md) for implemented scope and checks.
 
 Start with [AGENTS.md](../AGENTS.md), then [master rules](00-MASTER-RULES.md). All contributors must use the domain reading map in AGENTS.md.
 

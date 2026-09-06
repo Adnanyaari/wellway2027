@@ -1,0 +1,582 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Locale {
+  ar
+  en
+}
+
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum RecordStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+model User {
+  id             String         @id @default(cuid()) @db.VarChar(36)
+  name           String         @db.VarChar(191)
+  email          String         @unique @db.VarChar(191)
+  emailVerified  Boolean        @default(false)
+  image          String?        @db.Text
+  status         UserStatus     @default(ACTIVE)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  sessions       Session[]
+  accounts       Account[]
+  roles          UserRole[]
+  assignedLeads  Lead[]
+  leadActivities LeadActivity[]
+  posts          Post[]
+  auditLogs      AuditLog[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid()) @db.VarChar(36)
+  token     String   @unique @db.VarChar(191)
+  expiresAt DateTime
+  ipAddress String?  @db.VarChar(45)
+  userAgent String?  @db.Text
+  userId    String   @db.VarChar(36)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(cuid()) @db.VarChar(36)
+  accountId             String    @db.VarChar(191)
+  providerId            String    @db.VarChar(64)
+  userId                String    @db.VarChar(36)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?   @db.Text
+  password              String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(cuid()) @db.VarChar(36)
+  identifier String   @db.VarChar(191)
+  value      String   @db.Text
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@index([expiresAt])
+  @@map("verifications")
+}
+
+model Role {
+  id          String           @id @default(cuid()) @db.VarChar(36)
+  name        String           @unique @db.VarChar(64)
+  description String?          @db.VarChar(500)
+  users       UserRole[]
+  permissions RolePermission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(cuid()) @db.VarChar(36)
+  key         String           @unique @db.VarChar(100)
+  description String?          @db.VarChar(500)
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("permissions")
+}
+
+model UserRole {
+  userId    String   @db.VarChar(36)
+  roleId    String   @db.VarChar(36)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  createdAt DateTime @default(now())
+
+  @@id([userId, roleId])
+  @@index([roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String     @db.VarChar(36)
+  permissionId String     @db.VarChar(36)
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+  createdAt    DateTime   @default(now())
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model Client {
+  id              String              @id @default(cuid()) @db.VarChar(36)
+  name            String              @db.VarChar(191)
+  website         String?             @db.VarChar(2048)
+  sourceReference String?             @db.Text
+  approvedAt      DateTime?
+  lightLogoId     String?             @db.VarChar(36)
+  darkLogoId      String?             @db.VarChar(36)
+  lightLogo       Media?              @relation("LightLogo", fields: [lightLogoId], references: [id], onDelete: Restrict)
+  darkLogo        Media?              @relation("DarkLogo", fields: [darkLogoId], references: [id], onDelete: Restrict)
+  status          RecordStatus        @default(ACTIVE)
+  projects        Project[]
+  translations    ClientTranslation[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@map("clients")
+}
+
+model Service {
+  id           String               @id @default(cuid()) @db.VarChar(36)
+  status       RecordStatus         @default(ACTIVE)
+  translations ServiceTranslation[]
+  projects     ProjectService[]
+  leads        Lead[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  @@map("services")
+}
+
+model Project {
+  id           String               @id @default(cuid()) @db.VarChar(36)
+  clientId     String               @db.VarChar(36)
+  client       Client               @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  status       RecordStatus         @default(ACTIVE)
+  translations ProjectTranslation[]
+  services     ProjectService[]
+  media        ProjectMedia[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  @@index([clientId])
+  @@map("projects")
+}
+
+model ProjectService {
+  projectId String  @db.VarChar(36)
+  serviceId String  @db.VarChar(36)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+
+  @@id([projectId, serviceId])
+  @@index([serviceId])
+  @@map("project_services")
+}
+
+model Media {
+  id                 String             @id @default(cuid()) @db.VarChar(36)
+  storageKey         String             @unique @db.VarChar(191)
+  mimeType           String             @db.VarChar(100)
+  sizeBytes          BigInt
+  width              Int?
+  height             Int?
+  sourceReference    String?            @db.Text
+  ownershipReference String?            @db.Text
+  purpose            String             @db.VarChar(100)
+  isPublic           Boolean            @default(false)
+  status             RecordStatus       @default(ACTIVE)
+  lightLogoClients   Client[]           @relation("LightLogo")
+  darkLogoClients    Client[]           @relation("DarkLogo")
+  projects           ProjectMedia[]
+  translations       MediaTranslation[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@map("media")
+}
+
+model ProjectMedia {
+  projectId String  @db.VarChar(36)
+  mediaId   String  @db.VarChar(36)
+  position  Int
+  role      String  @default("gallery") @db.VarChar(32)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  media     Media   @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@id([projectId, mediaId])
+  @@unique([projectId, position])
+  @@index([mediaId])
+  @@map("project_media")
+}
+
+model Lead {
+  id                 String               @id @default(cuid()) @db.VarChar(36)
+  name               String               @db.VarChar(191)
+  email              String?              @db.VarChar(191)
+  phone              String?              @db.VarChar(40)
+  message            String               @db.Text
+  locale             Locale
+  sourceUrl          String?              @db.VarChar(2048)
+  referrer           String?              @db.VarChar(2048)
+  utmSource          String?              @db.VarChar(255)
+  utmMedium          String?              @db.VarChar(255)
+  utmCampaign        String?              @db.VarChar(255)
+  utmTerm            String?              @db.VarChar(255)
+  utmContent         String?              @db.VarChar(255)
+  requestedServiceId String?              @db.VarChar(36)
+  requestedService   Service?             @relation(fields: [requestedServiceId], references: [id], onDelete: Restrict)
+  status             String               @default("NEW") @db.VarChar(32)
+  assignedUserId     String?              @db.VarChar(36)
+  assignedUser       User?                @relation(fields: [assignedUserId], references: [id], onDelete: Restrict)
+  followUpAt         DateTime?
+  consentEvidence    Json?
+  idempotencyKey     String?              @unique @db.VarChar(191)
+  version            Int                  @default(0)
+  activities         LeadActivity[]
+  notifications      NotificationOutbox[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  @@index([status, createdAt])
+  @@index([assignedUserId, followUpAt])
+  @@index([requestedServiceId])
+  @@map("leads")
+}
+
+model LeadActivity {
+  id        String   @id @default(cuid()) @db.VarChar(36)
+  leadId    String   @db.VarChar(36)
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Restrict)
+  actorId   String?  @db.VarChar(36)
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  type      String   @db.VarChar(64)
+  note      String?  @db.Text
+  changes   Json?
+  createdAt DateTime @default(now())
+
+  @@index([leadId, createdAt])
+  @@index([actorId])
+  @@map("lead_activities")
+}
+
+model NotificationOutbox {
+  id               String    @id @default(cuid()) @db.VarChar(36)
+  leadId           String    @db.VarChar(36)
+  lead             Lead      @relation(fields: [leadId], references: [id], onDelete: Restrict)
+  deduplicationKey String    @unique @db.VarChar(191)
+  status           String    @default("PENDING") @db.VarChar(32)
+  attempts         Int       @default(0)
+  nextAttemptAt    DateTime  @default(now())
+  claimedAt        DateTime?
+  lastError        String?   @db.VarChar(500)
+  sentAt           DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([status, nextAttemptAt])
+  @@index([leadId])
+  @@map("notification_outbox")
+}
+
+model Post {
+  id           String            @id @default(cuid()) @db.VarChar(36)
+  authorId     String?           @db.VarChar(36)
+  author       User?             @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  status       RecordStatus      @default(ACTIVE)
+  translations PostTranslation[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([authorId])
+  @@map("posts")
+}
+
+model Faq {
+  id           String           @id @default(cuid()) @db.VarChar(36)
+  position     Int              @default(0)
+  status       RecordStatus     @default(ACTIVE)
+  translations FaqTranslation[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@map("faqs")
+}
+
+model Testimonial {
+  id               String                   @id @default(cuid()) @db.VarChar(36)
+  attribution      String                   @db.VarChar(191)
+  sourceReference  String                   @db.Text
+  consentReference String                   @db.Text
+  approvedAt       DateTime?
+  status           RecordStatus             @default(ACTIVE)
+  translations     TestimonialTranslation[]
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+
+  @@map("testimonials")
+}
+
+model Page {
+  id           String            @id @default(cuid()) @db.VarChar(36)
+  key          String            @unique @db.VarChar(100)
+  status       RecordStatus      @default(ACTIVE)
+  translations PageTranslation[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@map("pages")
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid()) @db.VarChar(36)
+  key       String   @unique @db.VarChar(100)
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Non-secret configuration only. Localized values use explicit ar/en keys.
+  @@map("site_settings")
+}
+
+model AuditLog {
+  id            String   @id @default(cuid()) @db.VarChar(36)
+  actorId       String?  @db.VarChar(36)
+  actor         User?    @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  action        String   @db.VarChar(100)
+  targetType    String   @db.VarChar(100)
+  targetId      String?  @db.VarChar(191)
+  outcome       String   @db.VarChar(32)
+  correlationId String?  @db.VarChar(64)
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([actorId, createdAt])
+  @@index([targetType, targetId])
+  @@map("audit_logs")
+}
+
+model Redirect {
+  id              String    @id @default(cuid()) @db.VarChar(36)
+  sourcePath      String    @unique @db.VarChar(512)
+  targetPath      String    @db.VarChar(2048)
+  statusCode      Int       @default(301)
+  sourceReference String    @db.Text
+  approvedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("redirects")
+}
+
+model ClientTranslation {
+  id          String  @id @default(cuid()) @db.VarChar(36)
+  clientId    String  @db.VarChar(36)
+  client      Client  @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  locale      Locale
+  name        String  @db.VarChar(191)
+  description String? @db.Text
+
+  status              PublicationStatus @default(DRAFT)
+  sourceReference     String?           @db.Text
+  reviewedByReference String?           @db.VarChar(191)
+  reviewedAt          DateTime?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([clientId, locale])
+  @@index([locale, status])
+  @@map("client_translations")
+}
+
+model ServiceTranslation {
+  id                  String            @id @default(cuid()) @db.VarChar(36)
+  serviceId           String            @db.VarChar(36)
+  service             Service           @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  locale              Locale
+  title               String            @db.VarChar(191)
+  body                String?           @db.LongText
+  summary             String?           @db.Text
+  slug                String            @db.VarChar(191)
+  seoTitle            String?           @db.VarChar(191)
+  seoDescription      String?           @db.VarChar(500)
+  status              PublicationStatus @default(DRAFT)
+  sourceReference     String?           @db.Text
+  reviewedByReference String?           @db.VarChar(191)
+  reviewedAt          DateTime?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([serviceId, locale])
+  @@unique([locale, slug])
+  @@index([locale, status])
+  @@map("service_translations")
+}
+
+model ProjectTranslation {
+  id                  String            @id @default(cuid()) @db.VarChar(36)
+  projectId           String            @db.VarChar(36)
+  project             Project           @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  locale              Locale
+  title               String            @db.VarChar(191)
+  body                String?           @db.LongText
+  summary             String?           @db.Text
+  slug                String            @db.VarChar(191)
+  seoTitle            String?           @db.VarChar(191)
+  seoDescription      String?           @db.VarChar(500)
+  status              PublicationStatus @default(DRAFT)
+  sourceReference     String?           @db.Text
+  reviewedByReference String?           @db.VarChar(191)
+  reviewedAt          DateTime?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([projectId, locale])
+  @@unique([locale, slug])
+  @@index([locale, status])
+  @@map("project_translations")
+}
+
+model PostTranslation {
+  id                  String            @id @default(cuid()) @db.VarChar(36)
+  postId              String            @db.VarChar(36)
+  post                Post              @relation(fields: [postId], references: [id], onDelete: Restrict)
+  locale              Locale
+  title               String            @db.VarChar(191)
+  body                String?           @db.LongText
+  summary             String?           @db.Text
+  slug                String            @db.VarChar(191)
+  seoTitle            String?           @db.VarChar(191)
+  seoDescription      String?           @db.VarChar(500)
+  status              PublicationStatus @default(DRAFT)
+  sourceReference     String?           @db.Text
+  reviewedByReference String?           @db.VarChar(191)
+  reviewedAt          DateTime?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([postId, locale])
+  @@unique([locale, slug])
+  @@index([locale, status])
+  @@map("post_translations")
+}
+
+model FaqTranslation {
+  id       String  @id @default(cuid()) @db.VarChar(36)
+  faqId    String  @db.VarChar(36)
+  faq      Faq     @relation(fields: [faqId], references: [id], onDelete: Restrict)
+  locale   Locale
+  question String  @db.VarChar(500)
+  answer   String? @db.Text
+
+  status              PublicationStatus @default(DRAFT)
+  sourceReference     String?           @db.Text
+  reviewedByReference String?           @db.VarChar(191)
+  reviewedAt          DateTime?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([faqId, locale])
+  @@index([locale, status])
+  @@map("faq_translations")
+}
+
+model TestimonialTranslation {
+  id            String      @id @default(cuid()) @db.VarChar(36)
+  testimonialId String      @db.VarChar(36)
+  testimonial   Testimonial @relation(fields: [testimonialId], references: [id], onDelete: Restrict)
+  locale        Locale
+  statement     String?     @db.Text
+  attribution   String?     @db.VarChar(191)
+
+  status              PublicationStatus @default(DRAFT)
+  sourceReference     String?           @db.Text
+  reviewedByReference String?           @db.VarChar(191)
+  reviewedAt          DateTime?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([testimonialId, locale])
+  @@index([locale, status])
+  @@map("testimonial_translations")
+}
+
+model MediaTranslation {
+  id         String  @id @default(cuid()) @db.VarChar(36)
+  mediaId    String  @db.VarChar(36)
+  media      Media   @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+  locale     Locale
+  altText    String? @db.VarChar(500)
+  caption    String? @db.Text
+  decorative Boolean @default(false)
+
+  status              PublicationStatus @default(DRAFT)
+  sourceReference     String?           @db.Text
+  reviewedByReference String?           @db.VarChar(191)
+  reviewedAt          DateTime?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([mediaId, locale])
+  @@index([locale, status])
+  @@map("media_translations")
+}
+
+model PageTranslation {
+  id                  String            @id @default(cuid()) @db.VarChar(36)
+  pageId              String            @db.VarChar(36)
+  page                Page              @relation(fields: [pageId], references: [id], onDelete: Restrict)
+  locale              Locale
+  title               String            @db.VarChar(191)
+  body                String?           @db.LongText
+  slug                String            @db.VarChar(191)
+  seoTitle            String?           @db.VarChar(191)
+  seoDescription      String?           @db.VarChar(500)
+  status              PublicationStatus @default(DRAFT)
+  sourceReference     String?           @db.Text
+  reviewedByReference String?           @db.VarChar(191)
+  reviewedAt          DateTime?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([pageId, locale])
+  @@unique([locale, slug])
+  @@index([locale, status])
+  @@map("page_translations")
+}

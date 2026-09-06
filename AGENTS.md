@@ -1,10 +1,12 @@
 # Well Way 2027 — mandatory agent instructions
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 Read this file first on every task. These instructions apply to the entire repository and to every AI agent and developer. Before delegating future work, give each agent these same reading requirements.
 
-## Current phase: documentation only
+## Current phase: initial scaffold
 
-The rebuild is NOT approved for implementation. Create or revise documentation only. Do not scaffold Next.js, install dependencies, create application/configuration code, change databases, or deploy. Stop after the documentation deliverable and wait for explicit user approval to build. Approval to build does not itself authorize production deployment or destructive data changes.
+The owner has approved the initial scaffold and its local verification. Preserve this boundary: no full business pages, dashboard modules, fake content, seed data, applied database migrations, or deployment. Read [ADR 0001](docs/adr/0001-initial-scaffold.md) for the implemented foundations and outstanding decisions. Further feature work needs approval. Scaffold approval does not authorize production deployment or destructive data changes.
 
 ## Required reading order
 
@@ -43,4 +45,4 @@ Domain filenames in the table are relative to `docs/`. Do not treat unread docum
 
 ## Completion report
 
-State what changed, validation performed, assumptions, and unresolved decisions. For this phase, show the final documentation tree and stop for approval before building.
+State what changed, validation performed, assumptions, and unresolved decisions. For this phase, show the final folder tree, installed dependencies, required environment variables, and intentionally deferred work, then stop for approval.

@@ -1,5 +1,7 @@
 # 06 — Authentication and RBAC
 
+> Phase update (2026-09-06): The owner has explicitly authorized the initial scaffold, dependency installation, schema generation, and local verification. Earlier documentation-only restrictions below describe the previous phase and no longer block this scope. Full website/dashboard features, fake content, applied database migrations, and production deployment remain unauthorized. Read docs/adr/0001-initial-scaffold.md (relative to repository root) for the current scaffold decisions. Routine reversible scaffold choices are covered by this authorization; production architecture acceptance remains a later gate.
+
 ## Authentication rules
 
 Select a maintained authentication solution through an ADR before implementing it. Do not create bespoke cryptography. Password-based accounts require a vetted adaptive password hash with reviewed parameters; never store plaintext or reversibly encrypted passwords. Password changes/recovery must revoke applicable sessions and use expiring, single-use, securely represented recovery tokens.
