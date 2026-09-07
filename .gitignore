@@ -12,3 +12,4 @@ db/generated/
 .verification/
 .env.local
 .env*.local
+.local-backups

@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { localeSchema } from "./i18n/config";
+import { parseMysqlDatabaseUrl } from "./database-url";
 
 const originSchema = z.url().refine((value) => {
   const url = new URL(value);
@@ -18,9 +19,10 @@ export function getSiteConfig() {
   return { ...result.data, origin: new URL(result.data.origin).origin, indexable: result.data.indexable === "true" };
 }
 export function getDatabaseUrl() {
-  const result = z.url().refine(value => new URL(value).protocol === "mysql:").safeParse(process.env.DATABASE_URL);
-  if (!result.success) throw new Error("A valid MySQL DATABASE_URL is required");
-  return result.data;
+  return parseMysqlDatabaseUrl(process.env.DATABASE_URL, "DATABASE_URL");
+}
+export function getMigrationDatabaseUrl() {
+  return parseMysqlDatabaseUrl(process.env.MIGRATION_DATABASE_URL, "MIGRATION_DATABASE_URL");
 }
 export function getAuthSecret() {
   const result = z.string().min(32).safeParse(process.env.BETTER_AUTH_SECRET);

@@ -3,7 +3,7 @@ import { direction, isLocale, localizedPath } from "@/lib/i18n/config";
 import ar from "@/messages/ar.json";
 import en from "@/messages/en.json";
 import { canonicalUrl, localeMetadata, serializeStructuredData } from "@/lib/seo/metadata";
-import { getAuthSecret, getDatabaseUrl, getSiteConfig } from "@/lib/env";
+import { getAuthSecret, getDatabaseUrl, getMigrationDatabaseUrl, getSiteConfig } from "@/lib/env";
 import { hasPermission, canAccessLead } from "@/features/auth/permissions";
 import { contentSecurityPolicy } from "@/lib/security/csp";
 import sitemap from "@/app/sitemap";
@@ -54,11 +54,20 @@ describe("server authorization policy", () => {
 describe("configuration and security", () => {
   it("rejects invalid environment values without echoing them", () => {
     vi.stubEnv("DATABASE_URL", "postgresql://private-value");
-    expect(() => getDatabaseUrl()).toThrow("A valid MySQL DATABASE_URL is required");
+    expect(() => getDatabaseUrl()).toThrow("DATABASE_URL must contain a complete MySQL connection URL");
+    vi.stubEnv("MIGRATION_DATABASE_URL", "");
+    expect(() => getMigrationDatabaseUrl()).toThrow("MIGRATION_DATABASE_URL must contain a complete MySQL connection URL");
     vi.stubEnv("BETTER_AUTH_SECRET", "short");
     expect(() => getAuthSecret()).toThrow("BETTER_AUTH_SECRET must contain at least 32 characters");
     vi.stubEnv("SITE_URL", "https://user:secret@example.invalid");
     expect(() => getSiteConfig()).toThrow("Invalid site environment configuration");
+  });
+  it("keeps runtime and migration database connections separate", () => {
+    vi.stubEnv("DATABASE_URL", "mysql://runtime-user:runtime-password@db.internal/runtime_db");
+    vi.stubEnv("MIGRATION_DATABASE_URL", "mysql://migration-user:migration-password@db.internal/runtime_db");
+    expect(getDatabaseUrl()).toContain("runtime-user");
+    expect(getMigrationDatabaseUrl()).toContain("migration-user");
+    expect(getDatabaseUrl()).not.toBe(getMigrationDatabaseUrl());
   });
   it("does not allow eval in production CSP", () => {
     const policy = contentSecurityPolicy("unit-nonce", false);

@@ -17,7 +17,8 @@ Checks: `npm run db:validate`, `npm run lint`, `npm run typecheck`, `npm test`, 
 
 | Variable | Use |
 | --- | --- |
-| `DATABASE_URL` | Private MySQL connection, required for DB/auth; absent for credential-free scaffold checks |
+| `DATABASE_URL` | Required private MySQL runtime connection; use an account without schema-administration privileges |
+| `MIGRATION_DATABASE_URL` | Required private MySQL connection for Prisma CLI and migrations; use a separate schema-migration account |
 | `BETTER_AUTH_SECRET` | Random secret of at least 32 characters, required for configured auth; never commit |
 | `SITE_URL` | Trusted canonical/auth origin, defaults to `http://localhost:3000`; must be HTTPS outside localhost |
 | `DEFAULT_LOCALE` | `ar` or `en`, defaults to `ar` |
@@ -28,5 +29,7 @@ Checks: `npm run db:validate`, `npm run lint`, `npm run typecheck`, `npm test`, 
 `/` redirects to the configured locale. `/ar` and `/en` provide minimal localized shells, proper direction, theme selection and metadata. `/dashboard` and localized dashboard routes check server sessions and permissions; visitors without sessions go to a localized unavailable sign-in shell. No authentication mutation endpoints are exposed. `/api/health` is a minimal liveness check, not a database readiness check. Robots/noindex and an empty sitemap prevent intentional publication of unfinished content.
 
 Prisma models include the requested entities plus supporting translation/auth/outbox/page/redirect records from the documentation. No fake data or seed is included. Isolated unit test identifiers do not represent business records.
+
+Prisma CLI commands load `MIGRATION_DATABASE_URL`; the running application loads only `DATABASE_URL`. Both must be complete MySQL URLs, and neither falls back to another database connection when missing.
 
 The [scaffold ADR](docs/adr/0001-initial-scaffold.md) explains package selection, security boundaries and outstanding production decisions. Live MySQL integration, login/bootstrap/MFA/recovery, uploads, lead saving/email workers, business publishing, approved SEO content, production settings and deployment remain subsequent approved work.
