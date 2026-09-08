@@ -9,6 +9,11 @@ readonly BUILD_DIR="${RELEASE_DIR}.build-$$"
 readonly CURRENT_LINK="${APP_ROOT}/current"
 readonly ENV_FILE="${APP_ROOT}/.env.local"
 
+# Non-interactive SSH sessions may omit npm's global binary directory even
+# though Node.js, npm and the globally installed PM2 are available.
+readonly NPM_GLOBAL_BIN="$(npm prefix --global)/bin"
+export PATH="${NPM_GLOBAL_BIN}:${PATH}"
+
 if [[ ! "${COMMIT_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
   echo "Invalid commit SHA" >&2
   exit 1
