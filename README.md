@@ -20,7 +20,7 @@ Checks: `npm run db:validate`, `npm run lint`, `npm run typecheck`, `npm test`, 
 | `DATABASE_URL` | Required private MySQL runtime connection; use an account without schema-administration privileges |
 | `MIGRATION_DATABASE_URL` | Required private MySQL connection for Prisma CLI and migrations; use a separate schema-migration account |
 | `BETTER_AUTH_SECRET` | Random secret of at least 32 characters, required for configured auth; never commit |
-| `SITE_URL` | Trusted canonical/auth origin, defaults to `http://localhost:3000`; must be HTTPS outside localhost |
+| `SITE_URL` | Trusted canonical/auth origin; required in production and must be HTTPS outside localhost (development defaults to `http://localhost:3000`) |
 | `DEFAULT_LOCALE` | `ar` or `en`, defaults to `ar` |
 | `SITE_INDEXABLE` | Defaults to `false`; reserved publication gate, does not index the scaffold |
 

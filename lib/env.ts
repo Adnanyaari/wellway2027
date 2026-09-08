@@ -3,17 +3,22 @@ import { z } from "zod";
 import { localeSchema } from "./i18n/config";
 import { parseMysqlDatabaseUrl } from "./database-url";
 
-const originSchema = z.url().refine((value) => {
-  const url = new URL(value);
-  return !url.username && !url.password && url.pathname === "/" && !url.search && !url.hash &&
-    (url.protocol === "https:" || (url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname)));
+const originSchema = z.string().refine((value) => {
+  try {
+    const url = new URL(value);
+    return !url.username && !url.password && url.pathname === "/" && !url.search && !url.hash &&
+      (url.protocol === "https:" || (url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname)));
+  } catch {
+    return false;
+  }
 });
 export function getSiteConfig() {
+  const origin = process.env.SITE_URL ?? (process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000");
   const result = z.object({
     origin: originSchema,
     defaultLocale: localeSchema,
     indexable: z.enum(["true", "false"]),
-  }).safeParse({ origin: process.env.SITE_URL ?? "http://localhost:3000",
+  }).safeParse({ origin,
     defaultLocale: process.env.DEFAULT_LOCALE ?? "ar", indexable: process.env.SITE_INDEXABLE ?? "false" });
   if (!result.success) throw new Error("Invalid site environment configuration");
   return { ...result.data, origin: new URL(result.data.origin).origin, indexable: result.data.indexable === "true" };

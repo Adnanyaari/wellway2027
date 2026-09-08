@@ -1,23 +1,23 @@
 # 0002 — GitHub Actions deployment to the CloudPanel VPS
 
-Date: 2026-09-07. Status: Proposed. Decision owner/reviewer: project owner. Acceptance evidence: pending explicit approval of this ADR.
+Date: 2026-09-07. Status: Accepted. Decision owner/reviewer: project owner. Acceptance evidence: explicitly approved by the owner in the project conversation on 2026-09-08.
 
 ## Context
 
-The repository is hosted at `Adnanyaari/wellway2027` with `main` as the production branch. The target is the CloudPanel Node.js site `site.wellway.cloud`, running as the unprivileged site user `wellway-site` on Node.js 22 and application port 3000. The project owner requested automatic deployment from GitHub to the VPS. The application is still an unpublished scaffold and must remain noindex.
+The repository is hosted at `Adnanyaari/wellway2027` with `main` as the production branch. The target is the CloudPanel Node.js site `wellway.fun`, located at `/home/adnan27/htdocs/wellway.fun` and running as the unprivileged site user `adnan27` on Node.js 22 and application port 3000. The project owner requested automatic deployment from GitHub to the VPS. The application is still an unpublished scaffold and must remain noindex.
 
-The exact VPS address, SSH port, SSH host key, CloudPanel-managed site path, production database credentials, backup policy and GitHub environment controls have not yet been verified. No secret may be committed to the repository or copied into a build artifact.
+The CloudPanel-managed site path and public domain have been reported and must be verified by the deployment script before activation. The exact VPS address, SSH port, SSH host key, production database grants, backup policy and GitHub environment controls have not yet been verified. No secret may be committed to the repository or copied into a build artifact.
 
 ## Decision
 
 - Pull requests and pushes to `main` run locked installation, Prisma generation and validation, lint, strict typecheck, tests and a production build on Node.js 22.
 - A successful push to `main` queues deployment through the GitHub `production` environment. Production requires an explicit environment approval. If the repository plan cannot enforce environment reviewers, deployment uses a manual `workflow_dispatch` gate after the same checks.
-- GitHub authenticates to the VPS with a dedicated SSH key restricted to `wellway-site`. The workflow pins the verified VPS host key in `known_hosts`; host-key checking is never disabled.
+- GitHub authenticates to the VPS with a dedicated SSH key restricted to `adnan27`. The workflow pins the independently verified VPS host key in `known_hosts`; host-key checking is never disabled.
 - Deployment transfers the exact Git commit to a versioned release directory below the verified CloudPanel site path. The VPS runs `npm ci`, Prisma generation and the production build for that release using Node.js 22.
 - Production secrets live in a protected environment file on the VPS outside versioned release directories. GitHub stores only connection metadata and the deployment SSH key.
 - A separate migration credential is exposed only to the serialized migration step. The runtime `DATABASE_URL` cannot create or alter schema. `prisma migrate deploy` runs once before activation after backup readiness is confirmed.
-- A stable `current` link identifies the active release. PM2 starts or reloads the application as `wellway-site` on port 3000. CloudPanel remains the owner of Nginx and TLS configuration.
-- Deployment succeeds only after local HTTP verification of `/api/health` and public HTTPS verification of `https://site.wellway.cloud/api/health`. The previous release remains available for application rollback; migrations are not rolled back automatically.
+- A stable `current` link identifies the active release. PM2 starts or reloads the application as `adnan27` on port 3000. CloudPanel remains the owner of Nginx and TLS configuration.
+- Deployment succeeds only after local HTTP verification of `/api/health` and public HTTPS verification of `https://wellway.fun/api/health`. The previous release remains available for application rollback; migrations are not rolled back automatically.
 - GitHub serializes production deployments and records the commit SHA. Old releases are removed only under a separately reviewed retention rule.
 
 ## Alternatives considered
@@ -44,7 +44,7 @@ The deployment does not publish business content, enable authentication, remove 
 - CI passes generation, schema validation, lint, strict typecheck, tests and production build.
 - A deployment cannot run without the production gate or connect without the pinned host key.
 - No secret appears in Git history, logs, artifacts or client bundles.
-- PM2 runs as `wellway-site`; port 3000 is not publicly exposed; CloudPanel serves valid HTTPS.
+- PM2 runs as `adnan27`; port 3000 is not publicly exposed; CloudPanel serves valid HTTPS.
 - The exact commit is recorded, both health checks pass, noindex remains present, and a prior application release can be restored.
 - Migration and runtime database credentials have distinct verified grants.
 

@@ -30,6 +30,6 @@ The user-specified stack is the baseline requirement in [master rules](../00-MAS
 | ADR | Status |
 | --- | --- |
 | [0001 — Initial scaffold](0001-initial-scaffold.md) | Technical selections proposed for owner review; reversible scaffold implementation directly authorized by the owner, not production acceptance |
-| [0002 — GitHub Actions deployment to the CloudPanel VPS](0002-github-actions-vps-deployment.md) | Proposed; awaiting owner acceptance before workflow and VPS implementation |
+| [0002 — GitHub Actions deployment to the CloudPanel VPS](0002-github-actions-vps-deployment.md) | Accepted by the project owner on 2026-09-08 |
 
 Decisions to record before dependent implementation include authentication/session strategy, exact stack/runtime compatibility, identifier conventions, media storage/upload processing, outbox worker execution, email provider, analytics/consent, redirect execution, and deployment/recovery architecture. Proposals must be based on verified requirements and current compatibility evidence when implementation begins.

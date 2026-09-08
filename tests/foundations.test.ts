@@ -62,6 +62,11 @@ describe("configuration and security", () => {
     vi.stubEnv("SITE_URL", "https://user:secret@example.invalid");
     expect(() => getSiteConfig()).toThrow("Invalid site environment configuration");
   });
+  it("requires an explicit canonical origin in production", () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("SITE_URL", "");
+    expect(() => getSiteConfig()).toThrow("Invalid site environment configuration");
+  });
   it("keeps runtime and migration database connections separate", () => {
     vi.stubEnv("DATABASE_URL", "mysql://runtime-user:runtime-password@db.internal/runtime_db");
     vi.stubEnv("MIGRATION_DATABASE_URL", "mysql://migration-user:migration-password@db.internal/runtime_db");
