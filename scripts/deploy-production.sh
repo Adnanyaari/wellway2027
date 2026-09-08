@@ -8,18 +8,14 @@ readonly RELEASE_DIR="${RELEASES_DIR}/${COMMIT_SHA}"
 readonly BUILD_DIR="${RELEASE_DIR}.build-$$"
 readonly CURRENT_LINK="${APP_ROOT}/current"
 readonly ENV_FILE="${APP_ROOT}/.env.local"
-
-# Non-interactive SSH sessions may omit npm's global binary directory even
-# though Node.js, npm and the globally installed PM2 are available.
-readonly NPM_GLOBAL_BIN="$(npm prefix --global)/bin"
-export PATH="${NPM_GLOBAL_BIN}:${PATH}"
+readonly -a PM2=(npm exec --yes --package=pm2@7.0.4 -- pm2)
 
 if [[ ! "${COMMIT_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
   echo "Invalid commit SHA" >&2
   exit 1
 fi
 
-for required_command in git npm node pm2 curl tar; do
+for required_command in git npm node curl tar; do
   command -v "${required_command}" >/dev/null || {
     echo "Missing command: ${required_command}" >&2
     exit 1
@@ -71,17 +67,17 @@ fi
 ln -sfn "${RELEASE_DIR}" "${CURRENT_LINK}.next"
 mv -Tf "${CURRENT_LINK}.next" "${CURRENT_LINK}"
 
-if ! pm2 startOrReload "${CURRENT_LINK}/ecosystem.config.cjs" --update-env || \
+if ! "${PM2[@]}" startOrReload "${CURRENT_LINK}/ecosystem.config.cjs" --update-env || \
   ! curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
     "http://127.0.0.1:3000/api/health" >/dev/null; then
   if [[ -n "${previous_release}" && -d "${previous_release}" ]]; then
     ln -sfn "${previous_release}" "${CURRENT_LINK}.next"
     mv -Tf "${CURRENT_LINK}.next" "${CURRENT_LINK}"
-    pm2 startOrReload "${CURRENT_LINK}/ecosystem.config.cjs" --update-env
+    "${PM2[@]}" startOrReload "${CURRENT_LINK}/ecosystem.config.cjs" --update-env
   fi
   echo "Deployment failed; restored the previous application release when available" >&2
   exit 1
 fi
 
-pm2 save
+"${PM2[@]}" save
 echo "Deployed ${COMMIT_SHA}"
