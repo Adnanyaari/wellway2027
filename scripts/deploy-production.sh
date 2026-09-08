@@ -22,6 +22,15 @@ for required_command in git npm node curl tar; do
   }
 done
 
+[[ "$(node --print 'process.versions.node.split(`.`)[0]')" == "22" ]] || {
+  echo "Deployment requires Node.js 22" >&2
+  exit 1
+}
+[[ "$(npm --version | cut -d. -f1)" == "11" ]] || {
+  echo "Deployment requires npm 11" >&2
+  exit 1
+}
+
 [[ -d "${APP_ROOT}/.git" ]] || {
   echo "Expected Git checkout at ${APP_ROOT}" >&2
   exit 1
