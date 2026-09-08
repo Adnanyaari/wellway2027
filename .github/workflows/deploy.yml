@@ -44,8 +44,7 @@ jobs:
   deploy:
     if: >-
       github.event_name != 'pull_request' &&
-      github.ref == 'refs/heads/main' &&
-      vars.PRODUCTION_DEPLOY_ENABLED == 'true'
+      github.ref == 'refs/heads/main'
     needs: checks
     runs-on: ubuntu-latest
     environment: production
