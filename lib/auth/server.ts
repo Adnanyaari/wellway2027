@@ -12,8 +12,21 @@ function createAuth() {
     secret: getAuthSecret(),
     database: prismaAdapter(getDb(), { provider: "mysql" }),
     trustedOrigins: [origin],
-    // Session-reading foundation only. No registration, login, recovery or OAuth endpoints exposed.
-    emailAndPassword: { enabled: false },
+    emailAndPassword: {
+      enabled: true,
+      disableSignUp: true,
+      // The protected owner has an explicitly approved one-time 4-digit credential.
+      // New passwords are independently required to contain at least 6 characters.
+      minPasswordLength: 4,
+      maxPasswordLength: 128,
+    },
+    rateLimit: {
+      enabled: true,
+      storage: "memory",
+      window: 60,
+      max: 20,
+      customRules: { "/sign-in/email": { window: 60, max: 5 } },
+    },
     session: { cookieCache: { enabled: false }, expiresIn: 60 * 60 * 8 },
     advanced: {
       useSecureCookies: process.env.NODE_ENV === "production",

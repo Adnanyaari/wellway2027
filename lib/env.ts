@@ -13,7 +13,8 @@ const originSchema = z.string().refine((value) => {
   }
 });
 export function getSiteConfig() {
-  const origin = process.env.SITE_URL ?? (process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000");
+  const origin = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.NODE_ENV === "production" ? undefined : "http://localhost:3000");
   const result = z.object({
     origin: originSchema,
     defaultLocale: localeSchema,
@@ -30,7 +31,7 @@ export function getMigrationDatabaseUrl() {
   return parseMysqlDatabaseUrl(process.env.MIGRATION_DATABASE_URL, "MIGRATION_DATABASE_URL");
 }
 export function getAuthSecret() {
-  const result = z.string().min(32).safeParse(process.env.BETTER_AUTH_SECRET);
+  const result = z.string().min(32).safeParse(process.env.BETTER_AUTH_SECRET ?? process.env.AUTH_SECRET);
   if (!result.success) throw new Error("BETTER_AUTH_SECRET must contain at least 32 characters");
   return result.data;
 }

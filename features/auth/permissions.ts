@@ -8,7 +8,13 @@ export const permissionKeys = [
   "leads.assign", "leads.export", "leads.delete",
 ] as const;
 export type PermissionKey = typeof permissionKeys[number];
-export type Principal = { id: string; permissions: readonly string[] };
+export type Principal = {
+  id: string;
+  name: string;
+  email: string;
+  mustChangePassword: boolean;
+  permissions: readonly string[];
+};
 
 export function hasPermission(principal: Principal | null, key: PermissionKey): boolean {
   return principal !== null && permissionKeys.includes(key) && principal.permissions.includes(key);

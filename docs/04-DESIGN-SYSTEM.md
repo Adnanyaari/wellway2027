@@ -18,6 +18,7 @@ Define reusable buttons, links, inputs, validation messages, dialogs, tables, ca
 
 - Owner direction (2026-09-09): keep the Home Hero, its overlaid header, the success-partners strip, and the footer visually dark in both themes. Between the partners strip and footer, sections such as services, cards, and achievements must use the selected theme's backgrounds, text, and borders. The footer uses the logo intended for its fixed dark surface.
 - Owner direction (2026-09-09): the public Header is fixed to the viewport top, uses a dark translucent backdrop for contrast across both themes, and continues to overlay the Hero without changing its layout height.
+- Owner direction (2026-09-09): authentication uses a full-page split layout inspired by the approved reference, with the active sign-in form and a branded purple visual panel. It must not appear as a modal. Google and Apple options may be shown only as clearly disabled controls until their authentication logic is separately approved and implemented.
 
 - Light and dark themes are mandatory for every component and page state. Support system preference plus a persistent explicit user choice; avoid theme flashes and hydration mismatch.
 - Select each client's light or dark logo for the active theme. Verify legibility and safe fallback behavior.

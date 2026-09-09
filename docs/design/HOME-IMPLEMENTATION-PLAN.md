@@ -269,11 +269,11 @@ npm run build
 | Phase | Status | Blocking input |
 | --- | --- | --- |
 | 0 — Inputs and asset inventory | In progress | Logos received; awaiting font files or font-source approval and approved business content |
-| 1 — Visual foundation | Not started | Phase 0 inputs |
-| 2 — Header and global controls | Not started | Logos received; Phase 1 foundation |
-| 3 — Hero Slider | Not started | Approved localized copy; media may use the designed empty state |
-| 4 — Clients and Services | Not started | Approved database records |
-| 5 — Statistics and Selected Work | Not started | Verified statistics source and eligible projects |
+| 1 — Visual foundation | In progress | Local font files remain unavailable |
+| 2 — Header and global controls | In progress | Implemented; final visual/accessibility review remains |
+| 3 — Hero Slider | In progress | Implemented with one approved Arabic slide; approved media and English copy remain |
+| 4 — Clients and Services | In progress | Database-backed components implemented; final interaction and visual review remains |
+| 5 — Statistics and Selected Work | In progress | Database-backed components implemented; no published eligible projects or approved project media currently exist |
 | 6 — Methodology and Industries | Not started | Approved translations and industries source |
 | 7 — Testimonials, CTA, and Footer | Not started | Approved testimonials and verified site settings |
 | 8 — Dashboard content management | Deferred pending approval | Data model, permissions, migration, and recovery decisions |

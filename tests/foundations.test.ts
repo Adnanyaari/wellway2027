@@ -39,11 +39,11 @@ describe("locales and SEO", () => {
 describe("server authorization policy", () => {
   it("denies anonymous and ungranted access, including a role name used as a grant", () => {
     expect(hasPermission(null, "dashboard.access")).toBe(false);
-    expect(hasPermission({ id: "unit-user", permissions: ["ADMIN"] }, "dashboard.access")).toBe(false);
-    expect(hasPermission({ id: "unit-user", permissions: ["dashboard.access"] }, "dashboard.access")).toBe(true);
+    expect(hasPermission({ id: "unit-user", name: "Unit", email: "unit@example.test", mustChangePassword: false, permissions: ["ADMIN"] }, "dashboard.access")).toBe(false);
+    expect(hasPermission({ id: "unit-user", name: "Unit", email: "unit@example.test", mustChangePassword: false, permissions: ["dashboard.access"] }, "dashboard.access")).toBe(true);
   });
   it("enforces assignment and separates read from update", () => {
-    const principal = { id: "unit-user", permissions: ["leads.read.assigned"] };
+    const principal = { id: "unit-user", name: "Unit", email: "unit@example.test", mustChangePassword: false, permissions: ["leads.read.assigned"] };
     expect(canAccessLead(principal, "read", "unit-user")).toBe(true);
     expect(canAccessLead(principal, "read", "another-unit-user")).toBe(false);
     expect(canAccessLead(principal, "read", null)).toBe(false);

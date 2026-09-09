@@ -4,9 +4,11 @@ import { Hero, type HeroSlide } from "@/components/home/hero";
 import { ClientsStrip } from "@/components/home/clients-strip";
 import { ServicesCarousel } from "@/components/home/services-carousel";
 import { AchievementsStrip } from "@/components/home/achievements-strip";
+import { SelectedWork } from "@/components/home/selected-work";
 import { getPublishedAchievements } from "@/features/achievements/public";
 import { getPublishedClients } from "@/features/clients/public";
 import { getPublishedServices } from "@/features/services/public";
+import { getPublishedProjects } from "@/features/projects/public";
 import { getSiteConfig } from "@/lib/env";
 import { isLocale, localizedPath } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n/messages";
@@ -22,10 +24,11 @@ export default async function LocalePage({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const messages = getMessages(locale);
-  const [clients, services, achievements] = await Promise.all([
+  const [clients, services, achievements, projects] = await Promise.all([
     getPublishedClients(locale),
     getPublishedServices(locale),
     getPublishedAchievements(locale),
+    getPublishedProjects(locale),
   ]);
   const slides: HeroSlide[] = [{
     id: "well-way",
@@ -42,5 +45,6 @@ export default async function LocalePage({ params }: Props) {
     <ClientsStrip clients={clients} title={messages.home.clientsTitle}/>
     <ServicesCarousel services={services} labels={messages.home.servicesCarousel}/>
     <AchievementsStrip achievements={achievements} label={messages.home.statisticsTitle} locale={locale}/>
+    <SelectedWork projects={projects} locale={locale} labels={messages.home.selectedWork}/>
   </Shell>;
 }

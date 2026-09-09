@@ -18,7 +18,7 @@ it("denies authenticated users without the required capability", async () => {
   await expect(requirePermission("dashboard.access", "en")).rejects.toThrow("not-found");
 });
 it("returns a principal only after permission verification", async () => {
-  const allowed = { id: "unit-user", permissions: ["dashboard.access"] };
+  const allowed = { id: "unit-user", name: "Unit", email: "unit@example.test", mustChangePassword: false, permissions: ["dashboard.access"] };
   principal.mockResolvedValue(allowed);
   await expect(requirePermission("dashboard.access", "en")).resolves.toEqual(allowed);
 });

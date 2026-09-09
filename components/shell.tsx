@@ -22,6 +22,10 @@ export async function Shell({ locale, children }: { locale: Locale; children: Re
           {messages.home.navigation.map((item, index) => <a key={item} href={localizedPath(locale, paths[index] ?? "")}>{item}</a>)}
         </nav>
         <div className="header-actions">
+          <a className="icon-button login-button" href={localizedPath(locale, "/auth/login")}
+            aria-label={messages.loginLabel} title={messages.loginLabel}>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5M15 12H3"/></svg>
+          </a>
           <LocaleSwitcher locale={locale} label={messages.language}/>
           <ThemeSwitcher labels={messages} />
           <a className="button button-primary header-cta" href={localizedPath(locale, "/contact")}>{messages.home.startProject}</a>
@@ -30,6 +34,7 @@ export async function Shell({ locale, children }: { locale: Locale; children: Re
           <summary aria-label={messages.home.openMenu}><span/><span/><span/></summary>
           <nav aria-label={messages.home.mainNavigation}>
             {messages.home.navigation.map((item, index) => <a key={item} href={localizedPath(locale, paths[index] ?? "")}>{item}</a>)}
+            <a href={localizedPath(locale, "/auth/login")}>{messages.loginLabel}</a>
           </nav>
         </details>
       </div>

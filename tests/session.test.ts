@@ -9,6 +9,7 @@ import { getPrincipal } from "@/features/auth/session";
 beforeEach(() => {
   vi.stubEnv("DATABASE_URL", "mysql://unit-only");
   vi.stubEnv("BETTER_AUTH_SECRET", "unit-test-only-not-a-real-secret-value");
+  vi.stubEnv("AUTH_SECRET", "");
   mocks.headers.mockResolvedValue(new Headers({ cookie: "unit-only=value" }));
   mocks.session.mockResolvedValue({ user: { id: "unit-user" }, session: { expiresAt: new Date(Date.now() + 60000) } });
 });
@@ -24,13 +25,13 @@ it("denies a missing or expired session", async () => {
   expect(await getPrincipal()).toBeNull(); expect(mocks.user).not.toHaveBeenCalled();
 });
 it("rejects a disabled account even with a valid session", async () => {
-  mocks.user.mockResolvedValue({ id: "unit-user", status: "DISABLED", roles: [] });
+  mocks.user.mockResolvedValue({ id: "unit-user", name: "Unit", email: "unit@example.test", mustChangePassword: false, status: "DISABLED", roles: [] });
   expect(await getPrincipal()).toBeNull();
 });
 it("reloads grants so revoked permissions are not retained", async () => {
-  mocks.user.mockResolvedValueOnce({ id: "unit-user", status: "ACTIVE", roles: [
+  mocks.user.mockResolvedValueOnce({ id: "unit-user", name: "Unit", email: "unit@example.test", mustChangePassword: false, status: "ACTIVE", roles: [
     { role: { permissions: [{ permission: { key: "dashboard.access" } }] } },
-  ] }).mockResolvedValueOnce({ id: "unit-user", status: "ACTIVE", roles: [] });
+  ] }).mockResolvedValueOnce({ id: "unit-user", name: "Unit", email: "unit@example.test", mustChangePassword: false, status: "ACTIVE", roles: [] });
   expect((await getPrincipal())?.permissions).toEqual(["dashboard.access"]);
   expect((await getPrincipal())?.permissions).toEqual([]);
 });

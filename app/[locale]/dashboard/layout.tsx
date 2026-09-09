@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requirePermission } from "@/features/auth/guards";
 import { isLocale } from "@/lib/i18n/config";
 import { privateMetadata } from "@/lib/seo/metadata";
+import { localizedPath } from "@/lib/i18n/config";
 
 export const metadata = privateMetadata;
 export default async function DashboardLayout({ children, params }: {
@@ -9,6 +10,7 @@ export default async function DashboardLayout({ children, params }: {
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  await requirePermission("dashboard.access", locale);
+  const principal = await requirePermission("dashboard.access", locale);
+  if (principal.mustChangePassword) redirect(localizedPath(locale, "/auth/change-password"));
   return children;
 }

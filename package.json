@@ -18,6 +18,7 @@
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:seed": "node --env-file=.env.local db/seed.mjs",
+    "db:bootstrap-admin": "node --env-file=.env.local db/bootstrap-admin.mjs",
     "db:seed:achievements-preview": "node --env-file=.env.local db/seed-achievements-preview.mjs"
   },
   "dependencies": {

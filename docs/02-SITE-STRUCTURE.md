@@ -24,7 +24,7 @@ Testimonials may appear as reusable approved sections; a standalone route is not
 
 ## Authenticated and internal routes
 
-The requested `/dashboard` entry checks `dashboard.access` then resolves to `/{locale}/dashboard`, which independently enforces access. Future modules cover analytics, clients, services, projects, leads, blog, FAQs, testimonials, users, and roles/permissions. `/{locale}/auth/login` is currently an unavailable-state shell; no login/recovery/registration HTTP endpoints exist. Implementing those flows requires the next approved phase.
+The requested `/dashboard` entry checks `dashboard.access` then resolves to `/{locale}/dashboard`, which independently enforces access. Future modules cover analytics, clients, services, projects, leads, blog, FAQs, testimonials, users, and roles/permissions. `/{locale}/auth/login` provides localized email/password sign-in for pre-provisioned staff only. Public registration and password recovery remain disabled. A protected user with an initial credential is redirected to `/{locale}/auth/change-password` before dashboard access.
 
 Dashboard, authentication, preview, search/filter variants intended as internal, and internal utility pages must be noindex and excluded from sitemaps. APIs and private downloads require appropriate authentication/permission checks and must not leak private data. URLs, layout guards, or robots rules never replace server authorization.
 

@@ -32,9 +32,12 @@ model User {
   id             String         @id @default(cuid()) @db.VarChar(36)
   name           String         @db.VarChar(191)
   email          String         @unique @db.VarChar(191)
+  phone          String?        @unique @db.VarChar(40)
   emailVerified  Boolean        @default(false)
   image          String?        @db.Text
   status         UserStatus     @default(ACTIVE)
+  isProtected    Boolean        @default(false)
+  mustChangePassword Boolean    @default(false)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   sessions       Session[]
@@ -44,8 +47,18 @@ model User {
   leadActivities LeadActivity[]
   posts          Post[]
   auditLogs      AuditLog[]
+  protection     ProtectedUser?
 
   @@map("users")
+}
+
+model ProtectedUser {
+  userId    String   @id @db.VarChar(36)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  reason    String   @db.VarChar(191)
+  createdAt DateTime @default(now())
+
+  @@map("protected_users")
 }
 
 model Session {
