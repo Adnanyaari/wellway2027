@@ -1,18 +1,29 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import { useSyncExternalStore } from "react";
 
-const subscribe = () => () => {};
+const themeEvent = "wellway-theme-change";
+const subscribe = (listener: () => void) => {
+  window.addEventListener(themeEvent, listener);
+  return () => window.removeEventListener(themeEvent, listener);
+};
+const getThemeSnapshot = () => document.documentElement.classList.contains("dark");
+const getServerSnapshot = () => true;
+
 export function ThemeSwitcher({ labels }: { labels: { theme: string; light: string; dark: string; system: string } }) {
-  const { theme, setTheme } = useTheme();
-  const mounted = useSyncExternalStore(subscribe, () => true, () => false);
-  return <label className="flex items-center gap-3">
-    <span>{labels.theme}</span>
-    <select aria-label={labels.theme} value={mounted ? theme : "system"} disabled={!mounted}
-      onChange={event => setTheme(event.target.value)} className="rounded border border-current bg-background px-3 py-2">
-      <option value="light">{labels.light}</option><option value="dark">{labels.dark}</option>
-      <option value="system">{labels.system}</option>
-    </select>
-  </label>;
+  const dark = useSyncExternalStore(subscribe, getThemeSnapshot, getServerSnapshot);
+  const nextLabel = dark ? labels.light : labels.dark;
+  return <button type="button" className="icon-button" aria-label={`${labels.theme}: ${nextLabel}`}
+    title={nextLabel} onClick={() => {
+      const nextTheme = dark ? "light" : "dark";
+      document.documentElement.classList.toggle("dark", nextTheme === "dark");
+      document.documentElement.classList.toggle("light", nextTheme === "light");
+      document.cookie = `wellway-theme=${nextTheme}; Path=/; Max-Age=31536000; SameSite=Lax`;
+      window.dispatchEvent(new Event(themeEvent));
+    }}>
+    {dark ? <SunIcon /> : <MoonIcon />}
+  </button>;
 }
+
+function SunIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>; }
+function MoonIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20.2 15.4A8.5 8.5 0 0 1 8.6 3.8a8.5 8.5 0 1 0 11.6 11.6Z"/></svg>; }

@@ -1,7 +1,14 @@
 import { notFound } from "next/navigation";
 import { Shell } from "@/components/shell";
+import { Hero, type HeroSlide } from "@/components/home/hero";
+import { ClientsStrip } from "@/components/home/clients-strip";
+import { ServicesCarousel } from "@/components/home/services-carousel";
+import { AchievementsStrip } from "@/components/home/achievements-strip";
+import { getPublishedAchievements } from "@/features/achievements/public";
+import { getPublishedClients } from "@/features/clients/public";
+import { getPublishedServices } from "@/features/services/public";
 import { getSiteConfig } from "@/lib/env";
-import { isLocale } from "@/lib/i18n/config";
+import { isLocale, localizedPath } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n/messages";
 import { localeMetadata } from "@/lib/seo/metadata";
 
@@ -15,5 +22,25 @@ export default async function LocalePage({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const messages = getMessages(locale);
-  return <Shell locale={locale}><h1 className="text-2xl font-semibold">{messages.title}</h1><p>{messages.pending}</p></Shell>;
+  const [clients, services, achievements] = await Promise.all([
+    getPublishedClients(locale),
+    getPublishedServices(locale),
+    getPublishedAchievements(locale),
+  ]);
+  const slides: HeroSlide[] = [{
+    id: "well-way",
+    eyebrow: locale === "ar" ? messages.home.heroEyebrow : null,
+    headline: locale === "ar" ? "تسويق سعودي يوصلك بالعالم" : "WELL WAY",
+    description: locale === "ar" ? null : messages.pending,
+    ctaLabel: messages.home.startProject,
+    ctaHref: localizedPath(locale, "/contact"),
+    portfolioLabel: locale === "ar" ? "معرض الأعمال" : "Our work",
+    portfolioHref: localizedPath(locale, "/projects"),
+  }];
+  return <Shell locale={locale}>
+    <Hero slides={slides} labels={messages.home.carousel}/>
+    <ClientsStrip clients={clients} title={messages.home.clientsTitle}/>
+    <ServicesCarousel services={services} labels={messages.home.servicesCarousel}/>
+    <AchievementsStrip achievements={achievements} label={messages.home.statisticsTitle} locale={locale}/>
+  </Shell>;
 }

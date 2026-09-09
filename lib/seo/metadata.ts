@@ -5,13 +5,13 @@ export const privateMetadata: Metadata = { robots: { index: false, follow: false
 export function canonicalUrl(origin: string, locale: Locale, path = "") {
   return new URL(localizedPath(locale, path), origin).toString();
 }
-export function localeMetadata(origin: string, locale: Locale, title: string): Metadata {
+export function localeMetadata(origin: string, locale: Locale, title: string, path = ""): Metadata {
   return {
     metadataBase: new URL(origin), title,
-    alternates: { canonical: canonicalUrl(origin, locale), languages: {
-      ar: canonicalUrl(origin, "ar"), en: canonicalUrl(origin, "en"),
+    alternates: { canonical: canonicalUrl(origin, locale, path), languages: {
+      ar: canonicalUrl(origin, "ar", path), en: canonicalUrl(origin, "en", path),
     } },
-    openGraph: { type: "website", title, url: canonicalUrl(origin, locale),
+    openGraph: { type: "website", title, url: canonicalUrl(origin, locale, path),
       locale: locale === "ar" ? "ar_SA" : "en_US", alternateLocale: locale === "ar" ? "en_US" : "ar_SA" },
     ...privateMetadata,
   };

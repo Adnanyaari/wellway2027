@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22.17.1 <23", "npm": ">=11 <12" },
+  "engines": {
+    "node": ">=22.17.1 <23",
+    "npm": ">=11 <12"
+  },
   "packageManager": "npm@11.19.1",
   "scripts": {
     "dev": "next dev",
@@ -13,7 +16,9 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "db:generate": "prisma generate",
-    "db:validate": "prisma validate"
+    "db:validate": "prisma validate",
+    "db:seed": "node --env-file=.env.local db/seed.mjs",
+    "db:seed:achievements-preview": "node --env-file=.env.local db/seed-achievements-preview.mjs"
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "1.7.3",
@@ -21,7 +26,6 @@
     "@prisma/client": "7.10.0",
     "better-auth": "1.7.3",
     "next": "16.3.4",
-    "next-themes": "0.4.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "server-only": "0.0.1",

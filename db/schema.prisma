@@ -176,6 +176,23 @@ model Service {
   @@map("services")
 }
 
+model Achievement {
+  id              String                   @id @default(cuid()) @db.VarChar(36)
+  value           Int
+  prefix          String?                  @db.VarChar(16)
+  suffix          String?                  @db.VarChar(16)
+  position        Int                      @unique
+  status          RecordStatus             @default(ACTIVE)
+  sourceReference String?                  @db.Text
+  approvedAt      DateTime?
+  translations    AchievementTranslation[]
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+
+  @@index([status, position])
+  @@map("achievements")
+}
+
 model Project {
   id           String               @id @default(cuid()) @db.VarChar(36)
   clientId     String               @db.VarChar(36)
@@ -441,6 +458,26 @@ model ServiceTranslation {
   @@unique([locale, slug])
   @@index([locale, status])
   @@map("service_translations")
+}
+
+model AchievementTranslation {
+  id                    String            @id @default(cuid()) @db.VarChar(36)
+  achievementId         String            @db.VarChar(36)
+  achievement           Achievement       @relation(fields: [achievementId], references: [id], onDelete: Restrict)
+  locale                Locale
+  title                 String            @db.VarChar(191)
+  subtitle              String?           @db.VarChar(500)
+  status                PublicationStatus @default(DRAFT)
+  sourceReference       String?           @db.Text
+  reviewedByReference   String?           @db.VarChar(191)
+  reviewedAt            DateTime?
+  publishedAt           DateTime?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  @@unique([achievementId, locale])
+  @@index([locale, status])
+  @@map("achievement_translations")
 }
 
 model ProjectTranslation {

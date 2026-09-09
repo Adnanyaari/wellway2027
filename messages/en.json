@@ -8,5 +8,48 @@
   "language": "Language",
   "authTitle": "Sign in",
   "authPending": "Sign-in is not available yet.",
-  "dashboard": "Dashboard"
+  "dashboard": "Dashboard",
+  "services": {
+    "title": "Our Services",
+    "home": "Home",
+    "eyebrow": "WELL WAY Services",
+    "heading": "Published services",
+    "empty": "No services are currently published."
+  },
+  "pages": {
+    "about": { "title": "About", "heading": "About WELL WAY", "empty": "This page has no published content yet." },
+    "projects": { "title": "Our Work", "heading": "Selected projects", "empty": "No projects are currently published.", "noImage": "No image" },
+    "clients": { "title": "Clients", "heading": "Our clients", "empty": "No clients are published for this language yet." },
+    "blog": { "title": "Blog", "heading": "Latest articles", "empty": "No articles are currently published." },
+    "faqs": { "title": "Frequently Asked Questions", "heading": "Common questions", "empty": "No questions are currently published." },
+    "contact": { "title": "Contact", "heading": "Start a conversation", "empty": "The contact form is not available yet." },
+    "privacy": { "title": "Privacy Policy", "heading": "Privacy Policy", "empty": "The privacy policy has not been published yet." },
+    "terms": { "title": "Terms and Conditions", "heading": "Terms and Conditions", "empty": "The terms and conditions have not been published yet." }
+  },
+  "home": {
+    "skipToContent": "Skip to content",
+    "homeLabel": "WELL WAY — Home",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open navigation menu",
+    "navigation": ["Home", "Services", "Work", "About", "Blog", "Contact"],
+    "startProject": "Start your project",
+    "clientsTitle": "Our partners",
+    "statisticsTitle": "Our numbers",
+    "statisticsPending": "Statistics will appear after their values and sources are approved.",
+    "servicesCarousel": {
+      "eyebrow": "What we do",
+      "title": "Our services",
+      "previous": "Previous service",
+      "next": "Next service",
+      "service": "WELL WAY services",
+      "noImage": "No image"
+    },
+    "heroEyebrow": "WELL WAY",
+    "carousel": {
+      "previous": "Previous slide",
+      "next": "Next slide",
+      "slide": "Featured presentation",
+      "mediaPending": "Media area — managed from the dashboard later"
+    }
+  }
 }

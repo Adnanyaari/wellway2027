@@ -2,7 +2,7 @@
 
 `schema.prisma` is the initial MySQL model contract; `client.ts` is the only shared Prisma runtime factory. `generated/` is ignored and recreated with `npm run db:generate`. Import the client only in server-owned domain code.
 
-No migration has been generated/applied and no records have been seeded. Configure an actual compatible MySQL service before migration work. XAMPP Apache does not run this application. Target MySQL 8.4 and utf8mb4; select/review the exact collation with case and Arabic slug tests when creating the initial migration.
+The initial migration exists under `db/migrations/`. The idempotent `db/seed.mjs` command loads only owner-approved foundation data into the selected local database: public brand media, non-secret site settings, services, and clients with available translations. Running the seed against production requires a separate reviewed release action. XAMPP Apache does not run this application.
 
 Client light/dark logo fields reference media directly; a separate logo table would duplicate those relationships. Projects require a client; join tables support multiple services and ordered gallery media. Translation slugs are unique per locale and content type. Referenced content/history uses restricted deletion; transient auth and membership records use intentional cascade behavior. Use archival in future services.
 

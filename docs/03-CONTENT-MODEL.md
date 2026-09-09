@@ -23,6 +23,7 @@ All public business content must come from approved source material. Record its 
 | Blog | Translated article content and SEO, approved author attribution, publication dates and relevant media |
 | FAQs | Translated questions/answers, ordering and publication state; no invented claims |
 | Testimonials | Verified statement, approved attribution, source/consent evidence and publication approval; no fabricated ratings |
+| Achievements | Up to six approved values; every value needs provenance and approval, while title and optional subtitle are localized and published independently |
 | Shared pages | Approved localized marketing and policy content; use the same translation/publication rules |
 | Leads | Private operational records, never public marketing content; see [09](09-DASHBOARD-CRM.md) |
 

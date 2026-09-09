@@ -15,6 +15,7 @@ The table names below are logical contracts; required `clients` and `services` p
 | `clients` | Identity, approved name, light logo media FK, dark logo media FK, lifecycle state |
 | `client_translations` | Client FK, locale, localized display/description fields when needed |
 | `services` / `service_translations` | Shared service identity/state; localized title, slug, content and SEO |
+| `achievements` / `achievement_translations` | Approved non-negative numeric value, optional prefix/suffix, display position 1-6, provenance/approval, and localized title/subtitle with publication state |
 | `projects` / `project_translations` | Required client FK (one client per project); translated title, slug, content and SEO |
 | `project_services` | Project FK plus service FK; composite unique constraint prevents duplicate associations |
 | `media` / `media_translations` | Storage metadata and ownership; localized alt text/captions |
