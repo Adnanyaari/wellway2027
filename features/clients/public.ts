@@ -10,8 +10,8 @@ export async function getPublishedClients(locale: Locale) {
       name: true,
       client: {
         select: {
-          lightLogo: { select: { storageKey: true, isPublic: true, status: true } },
-          darkLogo: { select: { storageKey: true, isPublic: true, status: true } },
+          lightLogo: { select: { id: true, storageKey: true, isPublic: true, status: true } },
+          darkLogo: { select: { id: true, storageKey: true, isPublic: true, status: true } },
         },
       },
     },

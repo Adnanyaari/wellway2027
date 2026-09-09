@@ -72,6 +72,8 @@ The design reference defines:
 
 The backend/database defines the actual content.
 
+Every owner-editable Home Page field must also have a permission-gated dashboard control. A section is complete only when its database model, dashboard management flow, and public rendering are connected. Do not leave editable business content hard-coded in components or add database fields that the owner cannot manage from the dashboard.
+
 ---
 
 # 4. Hero Slides

@@ -19,6 +19,12 @@ The application contains public marketing routes and an authenticated dashboard 
 
 The scaffold maps these layers to root-level `app/`, `components/`, `features/`, `lib/`, `db/`, `messages/`, `public/`, and `tests/`. Route files may call server services but must not accumulate SQL, permission rules, or repeated business logic. Data access and trusted operations must never enter a client bundle. Return explicit safe DTOs rather than entire database records. See [ADR 0001](adr/0001-initial-scaffold.md).
 
+## Dynamic content control path
+
+Owner-managed content and operational settings follow one complete control path: database record → authorized dashboard management → public or internal rendering. A site section is not complete while its editable content exists only in source code, or while its database fields have no suitable dashboard controls. Each module must define validation, permissions, translation and publication behavior, media references, ordering, activation or archival, and cache invalidation as applicable.
+
+Page composition, component behavior, semantic design tokens, technical limits, security policy, secrets, and deployment configuration remain in code or protected environment configuration unless the owner explicitly classifies a specific value as an editable business setting. See [ADR 0003](adr/0003-dynamic-content-control-path.md).
+
 ## Rendering and state
 
 - Prefer Server Components for public content and server data fetching. Use Client Components only for interaction, state, or browser APIs that require them; keep the boundary small.

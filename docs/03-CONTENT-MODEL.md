@@ -4,6 +4,8 @@
 
 All public business content must come from approved source material. Record its source, editor, review state, and publication approval. Do not invent business statistics, clients, projects, testimonials, reviews, credentials, awards, service claims, or translations represented as approved. Development fixtures, if later authorized, must be clearly synthetic, excluded from production, and never presented as business evidence.
 
+Every owner-managed content field and site setting must be stored in its authoritative database model and exposed through an appropriate permission-gated dashboard control before the corresponding dynamic site feature is considered complete. The site reads these records through server-owned domain services; it must not maintain a second hard-coded copy of editable business data.
+
 ## Translation and publishing contract
 
 - Separate shared identity/relationships from locale-specific fields. Use translation records with a unique parent ID plus locale; supported locales are `ar` and `en`.

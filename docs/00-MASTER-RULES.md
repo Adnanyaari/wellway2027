@@ -32,6 +32,7 @@ Current authorization covers the initial scaffold, dependency installation, sche
 8. Use reviewed Prisma migrations and least-privilege database access. Do not perform destructive data changes without approval and a recovery plan.
 9. Validate coding work with lint, strict typecheck, and relevant tests; never claim unrun checks passed.
 10. Preserve unrelated changes, update documentation, and disclose blockers before declaring work complete.
+11. Every business-content field or owner-managed operational setting shown by the site must have one authoritative database source and a permission-gated dashboard control. Implement each dynamic feature as one complete path: database contract, dashboard management, then site rendering. Keep layout structure, design tokens, technical constants, secrets, and deployment configuration in their appropriate code or environment boundaries rather than treating them as editable business content.
 
 ## Definition of done after build approval
 

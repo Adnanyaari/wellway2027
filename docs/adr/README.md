@@ -31,5 +31,7 @@ The user-specified stack is the baseline requirement in [master rules](../00-MAS
 | --- | --- |
 | [0001 — Initial scaffold](0001-initial-scaffold.md) | Technical selections proposed for owner review; reversible scaffold implementation directly authorized by the owner, not production acceptance |
 | [0002 — GitHub Actions deployment to the CloudPanel VPS](0002-github-actions-vps-deployment.md) | Accepted by the project owner on 2026-09-08 |
+| [0003 — Dynamic content control path](0003-dynamic-content-control-path.md) | Accepted by the project owner on 2026-09-09 |
+| [0004 — Local media storage](0004-local-media-storage.md) | Accepted by the project owner on 2026-09-09 |
 
 Decisions to record before dependent implementation include authentication/session strategy, exact stack/runtime compatibility, identifier conventions, media storage/upload processing, outbox worker execution, email provider, analytics/consent, redirect execution, and deployment/recovery architecture. Proposals must be based on verified requirements and current compatibility evidence when implementation begins.

@@ -247,6 +247,8 @@ model Media {
   lightLogoClients   Client[]           @relation("LightLogo")
   darkLogoClients    Client[]           @relation("DarkLogo")
   projects           ProjectMedia[]
+  lightHeroPages     PageTranslation[]   @relation("PageHeroLightMedia")
+  darkHeroPages      PageTranslation[]   @relation("PageHeroDarkMedia")
   translations       MediaTranslation[]
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -617,6 +619,10 @@ model PageTranslation {
   slug                String            @db.VarChar(191)
   seoTitle            String?           @db.VarChar(191)
   seoDescription      String?           @db.VarChar(500)
+  heroLightMediaId    String?           @db.VarChar(36)
+  heroLightMedia      Media?             @relation("PageHeroLightMedia", fields: [heroLightMediaId], references: [id], onDelete: Restrict)
+  heroDarkMediaId     String?            @db.VarChar(36)
+  heroDarkMedia       Media?             @relation("PageHeroDarkMedia", fields: [heroDarkMediaId], references: [id], onDelete: Restrict)
   status              PublicationStatus @default(DRAFT)
   sourceReference     String?           @db.Text
   reviewedByReference String?           @db.VarChar(191)
@@ -628,5 +634,7 @@ model PageTranslation {
   @@unique([pageId, locale])
   @@unique([locale, slug])
   @@index([locale, status])
+  @@index([heroLightMediaId])
+  @@index([heroDarkMediaId])
   @@map("page_translations")
 }
