@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 
 export type HeroSlide = {
   id: string;
@@ -16,7 +15,7 @@ export type HeroSlide = {
   darkImage: string | null;
 };
 
-export function Hero({ slides, labels }: { slides: HeroSlide[]; labels: { previous: string; next: string; slide: string; mediaPending: string } }) {
+export function Hero({ slides, labels, direction }: { slides: HeroSlide[]; labels: { previous: string; next: string; slide: string; mediaPending: string }; direction: "rtl" | "ltr" }) {
   const [active, setActive] = useState(0);
   const touchStart = useRef<number | null>(null);
   const wheelLock = useRef(0);
@@ -30,7 +29,7 @@ export function Hero({ slides, labels }: { slides: HeroSlide[]; labels: { previo
   }, [count]);
   if (count === 0) return null;
 
-  return <section className="hero" aria-roledescription="carousel" aria-label={labels.slide} tabIndex={0}
+  return <section className="hero" dir={direction} aria-roledescription="carousel" aria-label={labels.slide} tabIndex={0}
     onKeyDown={event => {
       if (event.key === "ArrowRight") go(active + (document.dir === "rtl" ? -1 : 1));
       if (event.key === "ArrowLeft") go(active + (document.dir === "rtl" ? 1 : -1));
@@ -50,7 +49,7 @@ export function Hero({ slides, labels }: { slides: HeroSlide[]; labels: { previo
       touchStart.current = null;
     }}>
     <div className="hero-glow hero-glow-one"/><div className="hero-glow hero-glow-two"/>
-    <div className="site-container hero-grid">
+    <div className="site-container hero-grid hero-grid-marketing">
       <div className="hero-copy">
         {slides.map((slide, index) => <article key={slide.id} className="hero-slide" data-active={index === active} aria-hidden={index !== active}>
           {slide.eyebrow && <p className="eyebrow">{slide.eyebrow}</p>}
@@ -67,21 +66,33 @@ export function Hero({ slides, labels }: { slides: HeroSlide[]; labels: { previo
           <button className="icon-button" onClick={() => go(active + 1)} disabled={active === count - 1} aria-label={labels.next}><ArrowIcon/></button>
         </div>}
       </div>
-      <div className={`hero-visual${slides[active]?.lightImage && slides[active]?.darkImage ? " has-image" : ""}`} aria-label={slides[active]?.headline || labels.mediaPending} role="img">
-        {slides[active]?.lightImage && slides[active]?.darkImage ? <><div className="hero-icon-orbit" aria-hidden="true"><span><OrbitIcon name="spark"/></span><span><OrbitIcon name="chart"/></span><span><OrbitIcon name="target"/></span><span><OrbitIcon name="message"/></span></div><Image className="hero-image hero-image-light" src={slides[active].lightImage} alt={slides[active].headline} fill priority unoptimized/><Image className="hero-image hero-image-dark" src={slides[active].darkImage} alt={slides[active].headline} fill priority unoptimized/></> : <><div className="brand-orbit"><span>W</span><span>W</span></div><p>{labels.mediaPending}</p></>}
-      </div>
+      <MarketingVisual />
     </div>
   </section>;
 }
 
 function ArrowIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>; }
 
-function OrbitIcon({ name }: { name: "spark" | "chart" | "target" | "message" }) {
-  const paths = {
-    spark: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/>,
-    chart: <><path d="M5 18V9M12 18V5M19 18v-6"/><path d="M3 20h18"/></>,
-    target: <><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="m15 9 5-5"/></>,
-    message: <path d="M4 5h16v11H9l-5 4V5Z"/>,
-  };
-  return <svg viewBox="0 0 24 24">{paths[name]}</svg>;
+function MarketingVisual() {
+  return <div className="marketing-visual" aria-hidden="true">
+    <div className="marketing-orbit marketing-orbit-outer" />
+    <div className="marketing-orbit marketing-orbit-inner" />
+    <div className="marketing-dashboard">
+      <div className="marketing-dashboard-top"><span /><span /><span /></div>
+      <div className="marketing-chart">
+        <span /><span /><span /><span /><span />
+        <svg viewBox="0 0 240 100"><path d="M5 85C36 82 48 48 78 57s42 20 67-8 46-14 90-42" /></svg>
+      </div>
+      <div className="marketing-metrics"><span /><span /><span /></div>
+    </div>
+    <span className="marketing-node marketing-node-target"><TargetIcon /></span>
+    <span className="marketing-node marketing-node-growth"><GrowthIcon /></span>
+    <span className="marketing-node marketing-node-message"><MessageIcon /></span>
+    <span className="marketing-node marketing-node-content"><ContentIcon /></span>
+  </div>;
 }
+
+function TargetIcon() { return <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="m15 9 5-5m0 0v4m0-4h-4"/></svg>; }
+function GrowthIcon() { return <svg viewBox="0 0 24 24"><path d="M4 18V9m6 9V5m6 13v-6m4 6H2"/></svg>; }
+function MessageIcon() { return <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9h8m-8 3h5"/></svg>; }
+function ContentIcon() { return <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6V3Z"/><path d="M14 3v5h5M9 12h7m-7 4h7"/></svg>; }

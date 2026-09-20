@@ -46,7 +46,7 @@ export default async function LocalePage({ params }: Props) {
     darkImage: homeContent?.heroDarkImage ?? homeContent?.heroLightImage ?? null,
   }];
   return <Shell locale={locale}>
-    <Hero slides={slides} labels={messages.home.carousel}/>
+    <Hero slides={slides} labels={messages.home.carousel} direction={locale === "ar" ? "rtl" : "ltr"}/>
     <ClientsStrip clients={clients} title={messages.home.clientsTitle}/>
     <ServicesCarousel services={services} labels={messages.home.servicesCarousel}/>
     <AchievementsStrip achievements={achievements} label={messages.home.statisticsTitle} locale={locale}/>
