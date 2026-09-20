@@ -30,7 +30,7 @@ The future pipeline must:
 6. Restart/reload PM2 using a documented strategy, then verify liveness, database/schema readiness, and public/private smoke checks. A liveness-only response must not approve a release whose database-backed pages fail.
 7. Mark success only after verification; retain the release identity and deployment audit trail.
 
-Build each immutable release in its final versioned directory before switching the `current` link. Do not build in a temporary directory and then move the completed Next.js tree: traced server dependencies can contain absolute links to their build location.
+Build each immutable release in its final versioned directory before switching the `current` link. Do not build in a temporary directory and then move the completed Next.js tree: traced server dependencies can contain absolute links to their build location. Keep the Next.js/Turbopack workspace root pinned to that release directory so a lockfile in the CloudPanel site root cannot redirect dependency tracing to the mutable checkout.
 
 No workflow YAML, PM2 configuration or Nginx configuration is included in this scaffold phase. `.env.example` contains safe placeholders only; no real environment file or credentials are created.
 
