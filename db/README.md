@@ -18,3 +18,5 @@ The password is hashed with Better Auth's scrypt implementation before it reache
 logged or committed. The resulting owner account remains active, carries the explicit `ADMIN` role and
 current permission catalog, and has `mustChangePassword` enabled. A restrictive database foreign key prevents
 deletion; server administration policy must also prevent deactivation or removal of the protected flag. The localized authentication flow enforces the first-login password change before dashboard access.
+Repeating the controlled command for the same protected owner replaces the credential, revokes every existing
+session for that account, records an audit event, and again requires a password change at the next sign-in.

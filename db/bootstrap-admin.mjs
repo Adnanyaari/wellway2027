@@ -37,6 +37,7 @@ try {
   await connection.beginTransaction();
 
   const [existing] = await connection.execute("SELECT `id` FROM `users` WHERE `email` = ? FOR UPDATE", [email]);
+  const existingUser = Boolean(existing[0]?.id);
   const userId = existing[0]?.id || randomUUID();
   await connection.execute(
     `INSERT INTO users (id, name, email, phone, emailVerified, status, isProtected, mustChangePassword, createdAt, updatedAt)
@@ -87,10 +88,12 @@ try {
      ON DUPLICATE KEY UPDATE userId=VALUES(userId), password=VALUES(password), updatedAt=NOW(3)`,
     [randomUUID(), userId, userId, passwordHash],
   );
+  await connection.execute("DELETE FROM sessions WHERE userId = ?", [userId]);
   await connection.execute(
     `INSERT INTO audit_logs (id, actorId, action, targetType, targetId, outcome, metadata, createdAt)
-     VALUES (?, ?, 'admin.bootstrap', 'user', ?, 'SUCCESS', ?, NOW(3))`,
-    [randomUUID(), userId, userId, JSON.stringify({ protected: true, mustChangePassword: true })],
+     VALUES (?, ?, ?, 'user', ?, 'SUCCESS', ?, NOW(3))`,
+    [randomUUID(), userId, existingUser ? "admin.credential_reset" : "admin.bootstrap", userId,
+      JSON.stringify({ protected: true, mustChangePassword: true, sessionsRevoked: true })],
   );
 
   await connection.commit();
