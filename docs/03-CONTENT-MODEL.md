@@ -15,12 +15,16 @@ Every owner-managed content field and site setting must be stored in its authori
 - Shared record archival prevents all its translations from appearing publicly. Deletion must respect relationships, historical records, and redirects.
 - Sanitize rich text using a defined allowlist on the server. Never permit arbitrary scripts or executable embeds.
 
+Interface terminology uses typed Arabic/English JSON dictionaries as source defaults and permission-gated database overrides from General Settings. This dictionary is limited to interface copy; editable business content remains in its domain translation records. See ADR 0005.
+
+Global brand assets are non-secret owner-managed settings. Light and dark logos are required, while the favicon may fall back to the light logo. Each setting stores a validated Media reference and public path; replacement uploads enter the governed Media library rather than writing into an immutable release directory.
+
 ## Domain contracts
 
 | Domain | Required content rules |
 | --- | --- |
 | Clients | Verified name and publication permission; separate light-theme and dark-theme logo references; website only if verified |
-| Services | Stable shared identity; Arabic/English titles, slugs, descriptions and SEO; active/archive state |
+| Services | Stable shared identity and optional governed image; Arabic/English titles, slugs, descriptions and SEO; active/archive state |
 | Projects | Exactly one client; multiple service associations; ordered gallery/media; translated title, slug, description, and SEO; only verified outcomes |
 | Blog | Translated article content and SEO, approved author attribution, publication dates and relevant media |
 | FAQs | Translated questions/answers, ordering and publication state; no invented claims |

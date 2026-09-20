@@ -46,7 +46,7 @@ try {
   const settings = [
     ["setting-brand-logos", "brand.logos", { light: { mediaId: "media-brand-logo-light", path: "/brand/wellway-logo-light.svg" }, dark: { mediaId: "media-brand-logo-dark", path: "/brand/wellway-logo-dark.svg" } }],
     ["setting-localization", "localization", { defaultLocale: "ar", supportedLocales: ["ar", "en"] }],
-    ["setting-company-contact", "company.contact", { primaryPhone: "+966550519484", unifiedPhone: "920014568", businessEmail: "bussiness@wellwaysa.com", address: { ar: "طريق الأمير محمد بن سلمان بن عبدالعزيز، الربيع، الرياض 13316، المملكة العربية السعودية", en: null }, whatsapp: null, social: {} }],
+    ["setting-company-contact", "company.contact", { primaryPhone: "+966550519484", unifiedPhone: "920014568", businessEmail: "bussiness@wellwaysa.com", address: { ar: "طريق الأمير محمد بن سلمان بن عبدالعزيز، الربيع، الرياض 13316، المملكة العربية السعودية", en: null }, whatsapp: null, mapUrl: "https://maps.app.goo.gl/Cj4aZx9Amesv2ydb9", workingHours: {}, social: {} }],
   ];
   for (const [id, key, value] of settings) await connection.execute(`INSERT INTO site_settings (id, \`key\`, value, createdAt, updatedAt) VALUES (?, ?, ?, NOW(), NOW()) ON DUPLICATE KEY UPDATE value=VALUES(value), updatedAt=NOW()`, [id, key, JSON.stringify(value)]);
 

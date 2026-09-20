@@ -179,6 +179,8 @@ model Client {
 
 model Service {
   id           String               @id @default(cuid()) @db.VarChar(36)
+  imageId      String?              @db.VarChar(36)
+  image        Media?               @relation("ServiceImage", fields: [imageId], references: [id], onDelete: Restrict)
   status       RecordStatus         @default(ACTIVE)
   translations ServiceTranslation[]
   projects     ProjectService[]
@@ -186,6 +188,7 @@ model Service {
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
 
+  @@index([imageId])
   @@map("services")
 }
 
@@ -249,6 +252,7 @@ model Media {
   projects           ProjectMedia[]
   lightHeroPages     PageTranslation[]   @relation("PageHeroLightMedia")
   darkHeroPages      PageTranslation[]   @relation("PageHeroDarkMedia")
+  imageServices      Service[]           @relation("ServiceImage")
   translations       MediaTranslation[]
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt

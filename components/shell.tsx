@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ThemeSwitcher } from "@/components/theme/switcher";
 import { LocaleSwitcher } from "@/components/locale-switcher";
-import { getMessages } from "@/lib/i18n/messages";
+import { getRuntimeMessages } from "@/features/settings/ui-messages";
 import { localizedPath, type Locale } from "@/lib/i18n/config";
 import { getBrandLogos } from "@/features/site-settings/public";
 import { SiteFooter } from "@/components/site-footer";
@@ -11,8 +11,7 @@ import { hasPermission } from "@/features/auth/permissions";
 const paths = ["", "/services", "/projects", "/about", "/blog", "/contact"];
 
 export async function Shell({ locale, children }: { locale: Locale; children: React.ReactNode }) {
-  const messages = getMessages(locale);
-  const [logos, principal] = await Promise.all([getBrandLogos(), getPrincipal()]);
+  const [messages, logos, principal] = await Promise.all([getRuntimeMessages(locale), getBrandLogos(), getPrincipal()]);
   const canOpenDashboard = hasPermission(principal, "dashboard.access");
   const accountHref = localizedPath(locale, canOpenDashboard ? "/dashboard" : "/auth/login");
   const accountLabel = canOpenDashboard ? (locale === "ar" ? "لوحة التحكم" : "Dashboard") : messages.loginLabel;

@@ -3,7 +3,7 @@ import { Shell } from "@/components/shell";
 import { ChangePasswordForm } from "@/components/auth/change-password-form";
 import { getPrincipal } from "@/features/auth/session";
 import { isLocale, localizedPath } from "@/lib/i18n/config";
-import { getMessages } from "@/lib/i18n/messages";
+import { getRuntimeMessages } from "@/features/settings/ui-messages";
 import { privateMetadata } from "@/lib/seo/metadata";
 
 export const metadata = privateMetadata;
@@ -13,7 +13,7 @@ export default async function ChangePasswordPage({ params }: { params: Promise<{
   const principal = await getPrincipal();
   if (!principal) redirect(localizedPath(locale, "/auth/login"));
   if (!principal.mustChangePassword) redirect(localizedPath(locale, "/dashboard"));
-  const messages = getMessages(locale);
+  const messages = await getRuntimeMessages(locale);
   return <Shell locale={locale}><section className="auth-page">
     <div className="auth-card">
       <p className="auth-eyebrow">{messages.auth.eyebrow}</p>

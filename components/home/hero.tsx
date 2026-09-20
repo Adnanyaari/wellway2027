@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { HeroAchievements, type AchievementItem } from "@/components/home/achievements-strip";
 
 export type HeroSlide = {
   id: string;
@@ -15,7 +16,7 @@ export type HeroSlide = {
   darkImage: string | null;
 };
 
-export function Hero({ slides, labels, direction }: { slides: HeroSlide[]; labels: { previous: string; next: string; slide: string; mediaPending: string }; direction: "rtl" | "ltr" }) {
+export function Hero({ slides, achievements, locale, labels, direction }: { slides: HeroSlide[]; achievements: AchievementItem[]; locale: "ar" | "en"; labels: { previous: string; next: string; slide: string; mediaPending: string }; direction: "rtl" | "ltr" }) {
   const [active, setActive] = useState(0);
   const touchStart = useRef<number | null>(null);
   const wheelLock = useRef(0);
@@ -67,6 +68,7 @@ export function Hero({ slides, labels, direction }: { slides: HeroSlide[]; label
         </div>}
       </div>
       <MarketingVisual />
+      <HeroAchievements achievements={achievements} locale={locale} />
     </div>
   </section>;
 }

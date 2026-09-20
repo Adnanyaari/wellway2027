@@ -5,7 +5,7 @@ import { getSiteConfig } from "@/lib/env";
 import { direction, isLocale } from "@/lib/i18n/config";
 import "./globals.css";
 
-export const metadata: Metadata = { title: "Well Way 2027", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Well Way 2027", robots: { index: false, follow: false }, icons: { icon: "/site-icon" } };
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const requestHeaders = await headers();
   const cookieStore = await cookies();

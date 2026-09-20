@@ -5,7 +5,7 @@ import { Shell } from "@/components/shell";
 import { getPublishedSectionEntries, isPublicSection } from "@/features/public-content/sections";
 import { getSiteConfig } from "@/lib/env";
 import { isLocale } from "@/lib/i18n/config";
-import { getMessages } from "@/lib/i18n/messages";
+import { getRuntimeMessages } from "@/features/settings/ui-messages";
 import { localeMetadata } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ locale: string; section: string }> };
@@ -13,14 +13,14 @@ type Props = { params: Promise<{ locale: string; section: string }> };
 export async function generateMetadata({ params }: Props) {
   const { locale, section } = await params;
   if (!isLocale(locale) || !isPublicSection(section)) notFound();
-  const labels = getMessages(locale).pages[section];
+  const labels = (await getRuntimeMessages(locale)).pages[section];
   return localeMetadata(getSiteConfig().origin, locale, labels.title, `/${section}`);
 }
 
 export default async function PublicSectionPage({ params }: Props) {
   const { locale, section } = await params;
   if (!isLocale(locale) || !isPublicSection(section)) notFound();
-  const messages = getMessages(locale);
+  const messages = await getRuntimeMessages(locale);
   const labels = messages.pages[section];
   const entries = await getPublishedSectionEntries(section, locale);
 

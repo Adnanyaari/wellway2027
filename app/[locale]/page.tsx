@@ -3,7 +3,6 @@ import { Shell } from "@/components/shell";
 import { Hero, type HeroSlide } from "@/components/home/hero";
 import { ClientsStrip } from "@/components/home/clients-strip";
 import { ServicesCarousel } from "@/components/home/services-carousel";
-import { AchievementsStrip } from "@/components/home/achievements-strip";
 import { SelectedWork } from "@/components/home/selected-work";
 import { getPublishedAchievements } from "@/features/achievements/public";
 import { getPublishedClients } from "@/features/clients/public";
@@ -12,20 +11,20 @@ import { getPublishedProjects } from "@/features/projects/public";
 import { getPublishedHomeContent } from "@/features/pages/home";
 import { getSiteConfig } from "@/lib/env";
 import { isLocale, localizedPath } from "@/lib/i18n/config";
-import { getMessages } from "@/lib/i18n/messages";
+import { getRuntimeMessages } from "@/features/settings/ui-messages";
 import { localeMetadata } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return localeMetadata(getSiteConfig().origin, locale, getMessages(locale).title);
+  return localeMetadata(getSiteConfig().origin, locale, (await getRuntimeMessages(locale)).title);
 }
 export default async function LocalePage({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const messages = getMessages(locale);
-  const [clients, services, achievements, projects, homeContent] = await Promise.all([
+  const [messages, clients, services, achievements, projects, homeContent] = await Promise.all([
+    getRuntimeMessages(locale),
     getPublishedClients(locale),
     getPublishedServices(locale),
     getPublishedAchievements(locale),
@@ -46,10 +45,9 @@ export default async function LocalePage({ params }: Props) {
     darkImage: homeContent?.heroDarkImage ?? homeContent?.heroLightImage ?? null,
   }];
   return <Shell locale={locale}>
-    <Hero slides={slides} labels={messages.home.carousel} direction={locale === "ar" ? "rtl" : "ltr"}/>
+    <Hero slides={slides} achievements={achievements} locale={locale} labels={messages.home.carousel} direction={locale === "ar" ? "rtl" : "ltr"}/>
     <ClientsStrip clients={clients} title={messages.home.clientsTitle}/>
-    <ServicesCarousel services={services} labels={messages.home.servicesCarousel}/>
-    <AchievementsStrip achievements={achievements} label={messages.home.statisticsTitle} locale={locale}/>
+    <ServicesCarousel services={services} labels={messages.home.servicesCarousel} locale={locale}/>
     <SelectedWork projects={projects} locale={locale} labels={messages.home.selectedWork}/>
   </Shell>;
 }

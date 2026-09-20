@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Shell } from "@/components/shell";
 import { isLocale } from "@/lib/i18n/config";
-import { getMessages } from "@/lib/i18n/messages";
+import { getRuntimeMessages } from "@/features/settings/ui-messages";
 import { privateMetadata } from "@/lib/seo/metadata";
 import { LoginForm } from "@/components/auth/login-form";
 import { getPrincipal } from "@/features/auth/session";
@@ -16,8 +16,7 @@ export default async function LoginPage({ params }: { params: Promise<{ locale: 
   if (!isLocale(locale)) notFound();
   const principal = await getPrincipal();
   if (principal) redirect(localizedPath(locale, principal.mustChangePassword ? "/auth/change-password" : "/dashboard"));
-  const messages = getMessages(locale);
-  const logos = await getBrandLogos();
+  const [messages, logos] = await Promise.all([getRuntimeMessages(locale), getBrandLogos()]);
   return <Shell locale={locale}><section className="auth-page">
     <div className="auth-glow" aria-hidden="true"/>
     <div className="auth-frame">

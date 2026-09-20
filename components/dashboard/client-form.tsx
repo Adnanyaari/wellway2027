@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import { localizedPath } from "@/lib/i18n/config";
 import { createClient, updateClient, type ClientActionState } from "@/app/[locale]/dashboard/clients/actions";
@@ -9,9 +9,10 @@ const initialState: ClientActionState = { ok: false, message: "" };
 type LogoOption = { id: string; storageKey: string; purpose: string };
 type Values = { id?: string; nameAr?: string; nameEn?: string; website?: string | null; lightLogoId?: string | null; darkLogoId?: string | null };
 
-export function ClientForm({ locale, values, logoOptions, compact = false }: { locale: Locale; values?: Values; logoOptions: LogoOption[]; compact?: boolean }) {
+export function ClientForm({ locale, values, logoOptions, compact = false, onSuccess }: { locale: Locale; values?: Values; logoOptions: LogoOption[]; compact?: boolean; onSuccess?: () => void }) {
   const ar = locale === "ar";
   const [state, action, pending] = useActionState(values?.id ? updateClient : createClient, initialState);
+  useEffect(() => { if (state.ok) onSuccess?.(); }, [state.ok, onSuccess]);
   return <form action={action} className={compact ? "client-form compact" : "client-form"}>
     <input type="hidden" name="locale" value={locale}/>{values?.id && <input type="hidden" name="id" value={values.id}/>} 
     <div className="client-form-grid">

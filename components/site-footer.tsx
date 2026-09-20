@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { localizedPath, type Locale } from "@/lib/i18n/config";
-import { getMessages } from "@/lib/i18n/messages";
+import { getRuntimeMessages } from "@/features/settings/ui-messages";
 import { getBrandLogos, getCompanyContact } from "@/features/site-settings/public";
 
 const navigationPaths = ["", "/services", "/projects", "/about", "/blog", "/contact"];
@@ -8,8 +8,7 @@ const socialLabels = { instagram: "Instagram", x: "X", linkedin: "LinkedIn", sna
 const socialMarks = { instagram: "IG", x: "X", linkedin: "in", snapchat: "SC", tiktok: "TT", youtube: "YT" } as const;
 
 export async function SiteFooter({ locale }: { locale: Locale }) {
-  const [logos, contact] = await Promise.all([getBrandLogos(), getCompanyContact()]);
-  const messages = getMessages(locale);
+  const [messages, logos, contact] = await Promise.all([getRuntimeMessages(locale), getBrandLogos(), getCompanyContact()]);
   const address = contact.address[locale];
   const socialLinks: Array<{ platform: string; href: string; label: string; mark: string }> = Object.entries(contact.social)
     .filter((entry): entry is [keyof typeof socialLabels, string] => Boolean(entry[1]))

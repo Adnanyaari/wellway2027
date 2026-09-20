@@ -12,9 +12,15 @@ Client logo workflow: each light-theme and dark-theme logo field provides direct
 
 Provide permission-gated client, service, project/portfolio, lead, blog, FAQ, testimonial, user/permission, and analytics modules. Support bounded search/filtering/pagination, explicit empty/error states, and audited writes. Content modules obey translation and publication rules; project editing enforces one client, multiple service associations, and ordered media. Client editing supports both theme logos.
 
+The Services module lists and searches database records, creates and edits Arabic and English translations together in modal forms, and stores changes as drafts. Title, slug, summary, body, SEO title, and SEO description are locale-specific. A shared service image may be selected from active public Media or uploaded inline, and is rendered on public service surfaces. Authorized users publish each locale independently and archive or restore the shared service. Permanent deletion requires its own permission and is rejected while projects or leads reference the service. Writes are permission-gated and audited; public service surfaces render only active services with published translations.
+
 The Pages module is the dashboard home for page-owned content. Its first complete control path is Home → Hero: Arabic and English eyebrow, headline, description, primary action, portfolio action, and light/dark hero images are edited independently, saved as drafts, and published per locale through `pages.update` and `pages.publish`. Each theme image can be selected from the shared Media library or uploaded directly from the Hero form; direct uploads create reusable Media records. The public homepage reads only the published translation and active public media from MySQL and retains the existing approved fallback until a locale is published. General settings remain reserved for site-wide values shared across pages.
 
 User/role management follows [06](06-AUTH-RBAC.md). All dashboard/auth pages are noindex and support both languages, both directions, and both themes. Do not place private records in public caches or analytics payloads.
+
+Settings is a `settings.manage`-protected workspace with internal tabs. General Settings controls global visual identity, initially the light logo, dark logo, and favicon. Administrators select active public images from the shared Media library or, when they also have `media.upload`, upload replacements inline. The selected references persist in `site_settings`, update public rendering after cache invalidation, and produce audit events. Additional global groups such as contact and social settings may be added as separate sections without mixing them into page-owned content.
+
+The Language & Terminology tab searches and edits Arabic and English UI-message values together, persists overrides in `site_settings`, records audit events, and leaves source JSON as an immutable fallback. Business content does not enter this dictionary. See ADR 0005.
 
 ## Unified lead capture
 

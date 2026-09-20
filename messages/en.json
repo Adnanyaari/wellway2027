@@ -38,15 +38,47 @@
   "dashboard": "Dashboard",
   "aboutPage": {
     "eyebrow": "About WELL WAY",
+    "headline": "We understand your project before we market it",
+    "intro": "At WELL WAY, we create marketing that understands your project before serving it.",
     "companyName": "WELL WAY Marketing Company",
     "brandPanel": "WELL WAY identity",
     "contentPending": "The company profile, vision, and methodology will appear here after the content is approved and published.",
+    "methodEyebrow": "Our approach",
+    "methodTitle": "How we work",
+    "principles": [
+      { "title": "We think before we execute", "description": "For us, quality does not begin at execution. It starts much earlier. Every step needs a clear reason, and every decision must serve the project." },
+      { "title": "We start from reality", "description": "We work with the project as it is, not as we wish it to be, so decisions are built on an honest picture." },
+      { "title": "We focus on what matters", "description": "The goal is not to do everything. It is to identify what deserves focus and what can create a meaningful difference." },
+      { "title": "We say it clearly", "description": "When something needs to change, we say so. When an option is unsuitable, we explain why. We prefer clarity over promises that are difficult to keep." }
+    ],
     "contactEyebrow": "Contact",
     "contactTitle": "Let’s start a conversation",
     "address": "Address",
     "email": "Email",
     "phone": "Phone",
-    "contactCta": "Start your project"
+    "contactCta": "Start your project",
+    "callCta": "Start your project",
+    "whatsappCta": "Talk to us"
+  },
+  "contactPage": {
+    "quickTitle": "Contact options",
+    "call": "Direct call",
+    "callAction": "Call our team",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "whatsappAction": "Talk to us",
+    "mobile": "Mobile",
+    "visit": "Visit us",
+    "openMap": "Open map",
+    "eyebrow": "We are close",
+    "title": "Let’s start a conversation that makes a difference",
+    "description": "Tell us briefly what you need and the right team member will contact you to understand your project and the next step.",
+    "hours": "Working hours",
+    "hoursPending": "Working hours are managed from site settings.",
+    "follow": "Follow us",
+    "socialPending": "Social links are managed from site settings.",
+    "formTitle": "Tell us about your project",
+    "formDescription": "Only the essential details we need to direct your request quickly."
   },
   "services": {
     "title": "Our Services",
@@ -88,7 +120,8 @@
       "previous": "Previous service",
       "next": "Next service",
       "service": "WELL WAY services",
-      "noImage": "No image"
+      "noImage": "No image",
+      "viewDetails": "View service"
     },
     "heroEyebrow": "WELL WAY",
     "carousel": {

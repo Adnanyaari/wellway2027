@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type AchievementItem = {
+export type AchievementItem = {
   id: string;
   title: string;
   subtitle: string | null;
@@ -10,12 +10,11 @@ type AchievementItem = {
   achievement: { value: number; prefix: string | null; suffix: string | null; position: number };
 };
 
-export function AchievementsStrip({ achievements, label, locale }: {
+export function HeroAchievements({ achievements, locale }: {
   achievements: AchievementItem[];
-  label: string;
   locale: "ar" | "en";
 }) {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
@@ -37,25 +36,16 @@ export function AchievementsStrip({ achievements, label, locale }: {
 
   if (achievements.length === 0) return null;
 
-  return <section ref={sectionRef} className="achievements-strip" aria-labelledby="achievements-title">
-    <div className="site-container achievements-inner">
-      <p className="achievements-label" id="achievements-title">
-        {label}
-        {achievements.some(item => item.isPreview) && <small>{locale === "ar" ? "بيانات تجريبية" : "Demo data"}</small>}
+  return <div ref={sectionRef} className="hero-achievements" aria-label={locale === "ar" ? "أرقامنا" : "Our numbers"}>
+    {achievements.map(item => <article className="hero-achievement" key={item.id}>
+      <p className="hero-achievement-number" aria-label={`${item.achievement.prefix ?? ""}${item.achievement.value}${item.achievement.suffix ?? ""}`}>
+        <span>{item.achievement.prefix}</span>
+        <CountUp value={item.achievement.value} started={started} locale={locale}/>
+        <span>{item.achievement.suffix}</span>
       </p>
-      <div className="achievements-grid">
-        {achievements.map(item => <article className="achievement-item" key={item.id}>
-          <p className="achievement-number" aria-label={`${item.achievement.prefix ?? ""}${item.achievement.value}${item.achievement.suffix ?? ""}`}>
-            <span>{item.achievement.prefix}</span>
-            <CountUp value={item.achievement.value} started={started} locale={locale}/>
-            <span>{item.achievement.suffix}</span>
-          </p>
-          <h2>{item.title}</h2>
-          {item.subtitle && <p className="achievement-subtitle">{item.subtitle}</p>}
-        </article>)}
-      </div>
-    </div>
-  </section>;
+      <h2>{item.title}</h2>
+    </article>)}
+  </div>;
 }
 
 function CountUp({ value, started, locale }: { value: number; started: boolean; locale: "ar" | "en" }) {

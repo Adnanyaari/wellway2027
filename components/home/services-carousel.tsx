@@ -1,12 +1,19 @@
 "use client";
 
+import Image from "next/image";
+import { localizedPath, type Locale } from "@/lib/i18n/config";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type ServiceItem = { id: string; title: string; slug: string; summary: string | null };
+type ServiceItem = { id: string; title: string; slug: string; summary: string | null; service: { image: { id: string; storageKey: string } | null } };
 
-export function ServicesCarousel({ services, labels }: {
+function mediaPath(id: string, storageKey: string) {
+  return storageKey.startsWith("uploads/") ? `/media/${encodeURIComponent(id)}` : `/${storageKey.replace(/^\/+/, "")}`;
+}
+
+export function ServicesCarousel({ services, labels, locale }: {
   services: ServiceItem[];
-  labels: { eyebrow: string; title: string; previous: string; next: string; service: string; noImage: string };
+  labels: { eyebrow: string; title: string; previous: string; next: string; service: string; noImage: string; viewDetails: string };
+  locale: Locale;
 }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -49,15 +56,16 @@ export function ServicesCarousel({ services, labels }: {
         onTouchEnd={event => { if (touchStart.current === null) return; const delta = (event.changedTouches[0]?.clientX ?? touchStart.current) - touchStart.current; if (Math.abs(delta) > 45) move(delta < 0 ? 1 : -1); touchStart.current = null; }}>
         {services.map((service, index) => {
           const position = relativePosition(index);
-          return <article key={service.id} className="stacked-service-card" data-position={position} aria-hidden={position !== 0} onClick={() => position !== 0 && move(position)}>
+          return <a href={localizedPath(locale, `/services/${service.slug}`)} key={service.id} className="stacked-service-card" data-position={position} aria-hidden={position !== 0} tabIndex={position === 0 ? 0 : -1} onClick={event => { if (position !== 0) { event.preventDefault(); move(position); } }}>
             <span className="stacked-service-index">{String(index + 1).padStart(2, "0")}</span>
-            <div className="service-media-placeholder" role="img" aria-label={labels.noImage}>
-              <div className="service-glyph" aria-hidden="true"><span/><span/><span/></div><small>{labels.noImage}</small>
+            {service.service.image ? <Image className="service-carousel-image" src={mediaPath(service.service.image.id, service.service.image.storageKey)} alt="" width={640} height={420} unoptimized/> : <div className="service-media-placeholder" role="img" aria-label={labels.noImage}><div className="service-glyph" aria-hidden="true"><span/><span/><span/></div><small>{labels.noImage}</small></div>}
+            <div className="service-card-content">
+              <h3>{service.title}</h3>
+              {service.summary && <p>{service.summary}</p>}
+              <span className="stacked-service-key" dir="ltr">/{service.slug}</span>
+              <span className="service-card-action">{labels.viewDetails}<Arrow/></span>
             </div>
-            <h3>{service.title}</h3>
-            {service.summary && <p>{service.summary}</p>}
-            <span className="stacked-service-key" dir="ltr">/{service.slug}</span>
-          </article>;
+          </a>;
         })}
       </div>
     </div>
