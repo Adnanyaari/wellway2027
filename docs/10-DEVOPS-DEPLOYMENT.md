@@ -27,8 +27,10 @@ The future pipeline must:
 3. Build or package a traceable artifact for the target runtime; never embed runtime secrets in browser assets or artifacts.
 4. Obtain the configured production approval, serialize deployments, and use restricted credentials with verified SSH host identity. Do not disable host-key checking.
 5. Verify backup/recovery readiness, apply reviewed production migrations once, and activate the versioned release.
-6. Restart/reload PM2 using a documented strategy, then verify health and public/private smoke checks.
+6. Restart/reload PM2 using a documented strategy, then verify liveness, database/schema readiness, and public/private smoke checks. A liveness-only response must not approve a release whose database-backed pages fail.
 7. Mark success only after verification; retain the release identity and deployment audit trail.
+
+Build each immutable release in its final versioned directory before switching the `current` link. Do not build in a temporary directory and then move the completed Next.js tree: traced server dependencies can contain absolute links to their build location.
 
 No workflow YAML, PM2 configuration or Nginx configuration is included in this scaffold phase. `.env.example` contains safe placeholders only; no real environment file or credentials are created.
 

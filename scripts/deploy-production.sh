@@ -5,7 +5,6 @@ readonly COMMIT_SHA="${1:?A commit SHA is required}"
 readonly APP_ROOT="/home/adnan27/htdocs/wellway.fun"
 readonly RELEASES_DIR="${APP_ROOT}/.releases"
 readonly RELEASE_DIR="${RELEASES_DIR}/${COMMIT_SHA}"
-readonly BUILD_DIR="${RELEASE_DIR}.build-$$"
 readonly CURRENT_LINK="${APP_ROOT}/current"
 readonly ENV_FILE="${APP_ROOT}/.env.local"
 readonly -a PM2=(pm2)
@@ -46,22 +45,23 @@ git -C "${APP_ROOT}" merge-base --is-ancestor "${COMMIT_SHA}" origin/main
 
 mkdir -p "${RELEASES_DIR}"
 if [[ ! -d "${RELEASE_DIR}" ]]; then
-  cleanup_build() {
-    rm -rf -- "${BUILD_DIR}"
+  cleanup_release() {
+    rm -rf -- "${RELEASE_DIR}"
   }
-  trap cleanup_build EXIT
-  mkdir "${BUILD_DIR}"
-  git -C "${APP_ROOT}" archive "${COMMIT_SHA}" | tar -x -C "${BUILD_DIR}"
-  ln -s "${ENV_FILE}" "${BUILD_DIR}/.env.local"
+  trap cleanup_release EXIT
+  mkdir "${RELEASE_DIR}"
+  git -C "${APP_ROOT}" archive "${COMMIT_SHA}" | tar -x -C "${RELEASE_DIR}"
+  ln -s "${ENV_FILE}" "${RELEASE_DIR}/.env.local"
 
-  cd "${BUILD_DIR}"
+  # Build at the final immutable path. Next.js/Prisma may create traced package
+  # links containing the absolute build path; moving the directory afterwards
+  # leaves those links broken at runtime.
+  cd "${RELEASE_DIR}"
   npm ci
   npm run db:generate
   npm run db:validate
   npm run build
 
-  cd "${APP_ROOT}"
-  mv "${BUILD_DIR}" "${RELEASE_DIR}"
   trap - EXIT
 fi
 
@@ -79,7 +79,13 @@ mv -Tf "${CURRENT_LINK}.next" "${CURRENT_LINK}"
 "${PM2[@]}" delete wellway >/dev/null 2>&1 || true
 if ! "${PM2[@]}" start "${CURRENT_LINK}/ecosystem.config.cjs" --update-env || \
   ! curl --fail --silent --show-error --retry 10 --retry-delay 2 --retry-connrefused \
-    "http://127.0.0.1:3000/api/health" >/dev/null; then
+    "http://127.0.0.1:3000/api/ready" >/dev/null || \
+  ! curl --fail --silent --show-error --location --retry 3 --retry-delay 2 \
+    "http://127.0.0.1:3000/" >/dev/null || \
+  ! curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+    "http://127.0.0.1:3000/ar" >/dev/null || \
+  ! curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+    "http://127.0.0.1:3000/en" >/dev/null; then
   if [[ -n "${previous_release}" && -d "${previous_release}" ]]; then
     ln -sfn "${previous_release}" "${CURRENT_LINK}.next"
     mv -Tf "${CURRENT_LINK}.next" "${CURRENT_LINK}"
